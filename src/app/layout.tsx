@@ -1,6 +1,8 @@
+import { AuthButton } from "@/components/AuthButton";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { NextAuthProvider } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,13 +20,17 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <main className="flex min-h-screen flex-col  ">
-          <div className="flex flex-row align-center justify-between h-16 items-center">
-            <div>MAPZ</div>
-            <div>MENU GUEST</div>
-          </div>
-          <div className="flex flex-grow">{children}</div>
+          <NextAuthProvider>
+            <div className="flex p-2 flex-row align-center justify-between h-16 items-center">
+              <div>MAPZ</div>
+              <AuthButton />
+            </div>
+            <div className="flex flex-grow">{children}</div>
+          </NextAuthProvider>
         </main>
       </body>
     </html>
   );
 }
+
+
