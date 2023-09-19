@@ -1,4 +1,5 @@
 import { AuthButton } from "@/components/AuthButton";
+import { FiltersButton } from "@/components/FiltersButton";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
@@ -23,6 +24,7 @@ export default function RootLayout({
           <NextAuthProvider>
             <div className="flex p-2 flex-row align-center justify-between h-16 items-center">
               <div>MAPZ</div>
+              <FiltersButton />
               <AuthButton />
             </div>
             <div className="flex flex-grow">{children}</div>
@@ -32,5 +34,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-
