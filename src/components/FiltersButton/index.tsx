@@ -1,10 +1,11 @@
 "use client";
 import { useState } from "react";
 import { FilterItems } from "@components/FilterItems";
+
 export const FiltersButton = () => {
   const [isOpen, setIsOpen] = useState(false);
+
   const handleButtonCLick = () => {
-    console.log("clicked");
     setIsOpen(!isOpen);
   };
 
@@ -17,11 +18,16 @@ export const FiltersButton = () => {
         Filters
       </div>
       {isOpen && (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-90 bg-white border rounded-xl shadow-md p-4">
+        <div className="w-10/12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-90 bg-white border rounded-xl shadow-md p-4">
           FILTERS
-          <FilterItems title="Charger type" list={["Type 1", "Type 2"]} />
+          <FilterItems
+            title="Charger type"
+            param="ev_charging_level"
+            list={["Level 1", "DC fast charge"]}
+          />
           <FilterItems
             title="Connector type"
+            param="ev_network"
             list={[
               "All",
               "NEMA1450",

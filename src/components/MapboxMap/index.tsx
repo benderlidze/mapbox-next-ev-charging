@@ -4,10 +4,16 @@ import * as React from "react";
 import Map from "react-map-gl";
 
 export const MapboxMap = () => {
+  
+  React.useEffect(() => {
+    console.log("MapboxMap mounted");
+    return () => {
+      console.log("MapboxMap unmounted");
+    };
+  }, []);
+
   return (
-    <div
-     className="flex flex-grow"
-    >
+    <div className="flex flex-grow">
       <Map
         mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
         initialViewState={{
@@ -15,7 +21,6 @@ export const MapboxMap = () => {
           longitude: -98,
           zoom: 4,
         }}
-        
         mapStyle="mapbox://styles/mapbox/light-v11"
         projection={{ name: "mercator" }}
       />
