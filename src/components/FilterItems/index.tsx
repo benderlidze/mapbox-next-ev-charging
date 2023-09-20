@@ -2,11 +2,11 @@ import { use, useEffect, useState } from "react";
 import { useFiltersStore } from "@store/filters";
 export interface FilterItemsProps {
   title: string;
-  param: string;
+  parameter: string;
   list: string[];
 }
 
-export const FilterItems = ({ title, list }: FilterItemsProps) => {
+export const FilterItems = ({ title, parameter, list }: FilterItemsProps) => {
   const [selected, setSelected] = useState<string[]>([]);
 
   const filters = useFiltersStore((state) => state.filters);
@@ -24,18 +24,13 @@ export const FilterItems = ({ title, list }: FilterItemsProps) => {
   };
 
   useEffect(() => {
-    console.log("filter", filters);
-  }, []);
-
-  useEffect(() => {
     console.log("selected", selected);
-    selected.length > 0 && updateFilter(title, selected);
+    selected.length > 0 && updateFilter(parameter, selected);
   }, [selected]);
 
   return (
     <div className="m-3">
-      <div className="font- bold">{title}</div>
-      {filters}
+      <div className="font-bold">{title}</div>
       <div className="grid grid-cols-5 gap-4 m-3">
         {list.map((item) => (
           <div className="flex" key={item}>

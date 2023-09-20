@@ -1,12 +1,40 @@
 "use client";
 import { useState } from "react";
 import { FilterItems } from "@components/FilterItems";
+import { useFiltersStore } from "@store/filters";
+import { useQuery } from "@tanstack/react-query";
 
 export const FiltersButton = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const filters = useFiltersStore((state) => state.filters);
 
   const handleButtonCLick = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleFilters = () => {
+    console.log("filters", filters);
+    setIsLoading(true);
+    const filtersData = Array.from(filters).map((d) => {
+      return { name: d[0], values: d[1] };
+    });
+
+    fetch("/api/load-pins/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(filtersData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
   };
 
   return (
@@ -22,12 +50,12 @@ export const FiltersButton = () => {
           FILTERS
           <FilterItems
             title="Charger type"
-            param="ev_charging_level"
+            parameter="ev_charging_level"
             list={["Level 1", "DC fast charge"]}
           />
           <FilterItems
             title="Connector type"
-            param="ev_network"
+            parameter="ev_connector_type"
             list={[
               "All",
               "NEMA1450",
@@ -39,6 +67,14 @@ export const FiltersButton = () => {
               "J1772COMBO",
             ]}
           />
+          <div
+            onClick={handleFilters}
+            className={`select-none ${
+              isLoading ? "pointer-events-none" : ""
+            } inline-block  text-white rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 cursor-pointer p-2 width-fit`}
+          >
+            {isLoading ? "Loading..." : "Show chargers"}
+          </div>
         </div>
       )}
     </>
