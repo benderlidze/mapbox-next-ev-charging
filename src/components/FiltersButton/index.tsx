@@ -2,12 +2,13 @@
 import { useState } from "react";
 import { FilterItems } from "@components/FilterItems";
 import { useFiltersStore } from "@store/filters";
-import { useQuery } from "@tanstack/react-query";
+import { usePinsStore } from "@store/pins";
 
 export const FiltersButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const filters = useFiltersStore((state) => state.filters);
+  const updatePins = usePinsStore((state) => state.updatePins);
 
   const handleButtonCLick = () => {
     setIsOpen(!isOpen);
@@ -17,7 +18,8 @@ export const FiltersButton = () => {
     console.log("filters", filters);
     setIsLoading(true);
     const filtersData = Array.from(filters).map((d) => {
-      return { name: d[0], values: d[1] };
+      return `${d[0]}=${d[1].join(",")}`;
+      //return { name: d[0], values: d[1] };
     });
 
     fetch("/api/load-pins/", {
@@ -31,6 +33,7 @@ export const FiltersButton = () => {
       .then((data) => {
         console.log("data", data);
         setIsLoading(false);
+        updatePins(data);
       })
       .catch((err) => {
         console.log("err", err);
@@ -51,7 +54,7 @@ export const FiltersButton = () => {
           <FilterItems
             title="Charger type"
             parameter="ev_charging_level"
-            list={["Level 1", "DC fast charge"]}
+            list={["Level 1", "dc_fast"]}
           />
           <FilterItems
             title="Connector type"
@@ -62,7 +65,7 @@ export const FiltersButton = () => {
               "NEMA515",
               "CMADEMO",
               "TESLA",
-              "NEMO520",
+              "NEMA520",
               "J1772",
               "J1772COMBO",
             ]}

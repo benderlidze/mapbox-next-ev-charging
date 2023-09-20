@@ -1,16 +1,47 @@
 "use client";
+import { usePinsStore } from "@store/pins";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as React from "react";
-import Map from "react-map-gl";
+import { useMemo } from "react";
+import Map, {
+  Marker,
+  Popup,
+  NavigationControl,
+  FullscreenControl,
+  ScaleControl,
+  GeolocateControl,
+  MapboxEvent,
+  MapMouseEvent,
+} from "react-map-gl";
 
 export const MapboxMap = () => {
-  
+  const pins = usePinsStore((state) => state.pins);
+
   React.useEffect(() => {
     console.log("MapboxMap mounted");
     return () => {
       console.log("MapboxMap unmounted");
     };
   }, []);
+
+  console.log("pins!!!!!!", pins);
+
+  const evPins = pins.fuel_stations
+    ? pins.fuel_stations.map((pin, index) => (
+        <Marker
+          key={`marker-${index}`}
+          longitude={pin.longitude}
+          latitude={pin.latitude}
+          anchor="bottom"
+          onClick={(e: MapMouseEvent) => {
+            // If we let the click event propagates to the map, it will immediately close the popup
+            // with `closeOnClick: true`
+            e.originalEvent.stopPropagation();
+            // setPopupInfo(city);
+          }}
+        ></Marker>
+      ))
+    : [];
 
   return (
     <div className="flex flex-grow">
@@ -23,7 +54,9 @@ export const MapboxMap = () => {
         }}
         mapStyle="mapbox://styles/mapbox/light-v11"
         projection={{ name: "mercator" }}
-      />
+      >
+        {evPins}
+      </Map>
     </div>
   );
 };
