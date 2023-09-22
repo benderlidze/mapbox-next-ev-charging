@@ -34,15 +34,13 @@ export const MapboxMap = () => {
             longitude={pin.longitude}
             latitude={pin.latitude}
             anchor="bottom"
-            onClick={(e: MapMouseEvent) => {
+            onClick={() => {
               // If we let the click event propagates to the map, it will immediately close the popup
               // with `closeOnClick: true`
-              e.originalEvent.stopPropagation();
               // setPopupInfo(city);
               console.log("pin", pin);
               setSelectedPin(pin);
             }}
-            className="cursor-pointer"
           ></Marker>
         );
       })
