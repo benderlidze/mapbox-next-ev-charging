@@ -32,8 +32,10 @@ export const FiltersButton = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log("data", data);
+        updatePins(data.fuel_stations);
+
         setIsLoading(false);
-        updatePins(data);
+        setIsOpen(false);
       })
       .catch((err) => {
         console.log("err", err);
@@ -44,7 +46,7 @@ export const FiltersButton = () => {
     <>
       <div
         onClick={handleButtonCLick}
-        className="p-2 border rounded-md  cursor-pointer hover:bg-gray-100 select-none"
+        className="p-2 border cursor-pointer select-none rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white"
       >
         Filters
       </div>

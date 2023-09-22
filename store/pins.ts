@@ -3,7 +3,6 @@ import { create } from "zustand";
 interface State {
   pins: [];
 }
-
 interface Action {
   updatePins: (pins: []) => void;
 }

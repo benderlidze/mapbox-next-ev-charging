@@ -7,10 +7,10 @@ export default async function GET(req: NextApiRequest, res: NextApiResponse) {
   const apiKey = "DEMO_KEY";
 
   const query = req.body.join("&");
-  const url = `https://developer.nrel.gov/api/alt-fuel-stations/v1.json?limit=100&${query}`;
+  const url = `https://developer.nrel.gov/api/alt-fuel-stations/v1.json?limit=100&fuel_type=ELEC&${query}`;
 
   console.log("url", url);
-  
+
   const data = await fetch(url, {
     method: "GET",
     headers: {
