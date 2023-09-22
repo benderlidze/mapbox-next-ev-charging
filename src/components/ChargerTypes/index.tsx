@@ -21,7 +21,7 @@ export const ChargerTypes = ({ types }: { types: ChargerType[] }) => {
   const chargers = types.map((type) => {
     if (chargersList.hasOwnProperty(type as PropertyKey)) {
       return (
-        <div className="flex flex-col p-3 w-1/3 items-center ">
+        <div className="flex flex-col p-3 w-1/3 items-center" key={type}>
           <div className="text-sm">{type}</div>
           <div className="text-sm">
             <img src={chargersList[type]} alt="" />
