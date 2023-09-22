@@ -15,9 +15,22 @@ export interface Pin {
   access_days_time: string;
 }
 
-export const PinPopup = ({ pin }: { pin: Pin }) => {
+interface PinPopupProps {
+  pin: Pin;
+  setSelectedPin: (pin: Pin | undefined) => void;
+}
+
+export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
   return (
-    <div className="w-80 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-90 bg-white shadow-md ">
+    <div className="w-80 min-h-[41rem] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-90 bg-white shadow-md ">
+      <div
+        className="absolute top-0 right-0 p-2 cursor-pointer"
+        onClick={() => {
+          setSelectedPin(undefined);
+        }}
+      >
+        <img src="/icons/close.svg" alt="" width={40} />
+      </div>
       <div className="flex flex-col">
         <img
           src="https://media.drivingelectric.com/image/private/s--AymR0BqQ--/f_auto,t_primary-image-desktop@1/v1597772418/drivingelectric/2018-11/2cteslamodel3.jpg"
@@ -38,6 +51,13 @@ export const PinPopup = ({ pin }: { pin: Pin }) => {
             </div>
           </div>
           <div className="flex flex-row justify-start align-middle space-x-4 my-3 ">
+            <div className="flex flex-row align-middle gap-1">
+              <img src="/icons/star.svg" alt="" width={12} />
+              <img src="/icons/star.svg" alt="" width={12} />
+              <img src="/icons/star.svg" alt="" width={12} />
+              <img src="/icons/star.svg" alt="" width={12} />
+              <img src="/icons/star.svg" alt="" width={12} />
+            </div>
             <div className="text-sm">4.5 </div>
             <div className="text-sm">(128 reviews)</div>
           </div>

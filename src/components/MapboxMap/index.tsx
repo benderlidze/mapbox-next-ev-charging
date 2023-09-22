@@ -61,7 +61,9 @@ export const MapboxMap = () => {
         projection={{ name: "mercator" }}
       >
         {evPins}
-        {selectedPin && <PinPopup pin={selectedPin} />}
+        {selectedPin && (
+          <PinPopup pin={selectedPin} setSelectedPin={setSelectedPin} />
+        )}
       </Map>
     </div>
   );
