@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FilterItems } from "@components/FilterItems";
 import { useFiltersStore } from "@store/filters";
 import { usePinsStore } from "@store/pins";
@@ -7,8 +7,8 @@ import { usePinsStore } from "@store/pins";
 export const FiltersButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const filters = useFiltersStore((state) => state.filters);
   const updatePins = usePinsStore((state) => state.updatePins);
+  const { filters, updateFilter } = useFiltersStore();
 
   const handleButtonCLick = () => {
     setIsOpen(!isOpen);
@@ -33,7 +33,6 @@ export const FiltersButton = () => {
       .then((data) => {
         console.log("data", data);
         updatePins(data.fuel_stations);
-
         setIsLoading(false);
         setIsOpen(false);
       })
@@ -68,6 +67,8 @@ export const FiltersButton = () => {
               { displayName: "Level 2", value: "2" },
               { displayName: "DC Fast", value: "dc_fast" },
             ]}
+            selectedFilters={filters}
+            updateFilter={updateFilter}
           />
           <FilterItems
             title="Connector type"
@@ -82,6 +83,95 @@ export const FiltersButton = () => {
               { displayName: "CHAdeMO", value: "CHADEMO" },
               { displayName: "Tesla", value: "TESLA" },
             ]}
+            selectedFilters={filters}
+            updateFilter={updateFilter}
+          />
+          <FilterItems
+            title="Charging network"
+            parameter="ev_network"
+            list={[
+              { displayName: "All", value: "all" },
+              { displayName: "7Charge", value: "7CHARGE" },
+              { displayName: "AddÉnergie", value: "AddÉnergie Technologies" },
+              { displayName: "AmpUp", value: "AMPUP" },
+              { displayName: "BC Hydro", value: "BCHYDRO" },
+              { displayName: "Blink", value: "Blink Network" },
+              { displayName: "ChargeLab", value: "CHARGELAB" },
+              { displayName: "ChargePoint", value: "ChargePoint Network" },
+              { displayName: "ChargeUp", value: "CHARGEUP" },
+              { displayName: "Chargie", value: "CHARGIE" },
+              { displayName: "CircleK Charge", value: "CIRCLE_K" },
+              {
+                displayName: "CircleK/Couche-Tard Recharge",
+                value: "COUCHE_TARD",
+              },
+              {
+                displayName: "Circuit électrique",
+                value: "Circuit électrique",
+              },
+              { displayName: "eCharge Network", value: "eCharge Network" },
+              { displayName: "Electrify America", value: "Electrify America" },
+              { displayName: "Electrify Canada", value: "Electrify Canada" },
+              { displayName: "EV Charging Solutions", value: "EVCS" },
+              { displayName: "EV Connect", value: "EV Connect" },
+              { displayName: "evGateway", value: "EVGATEWAY" },
+              { displayName: "EVgo", value: "eVgo Network" },
+              { displayName: "EV Range", value: "EVRANGE" },
+              { displayName: "FLASH", value: "FLASH" },
+              { displayName: "FLO", value: "FLO" },
+              { displayName: "FPL EVolution", value: "FPLEV" },
+              { displayName: "Francis", value: "FCN" },
+              { displayName: "Graviti Energy", value: "GRAVITI_ENERGY" },
+              { displayName: "Ivy", value: "IVY" },
+              { displayName: "Livingston Energy Group", value: "LIVINGSTON" },
+              { displayName: "Non-Networked", value: "Non-Networked" },
+              { displayName: "Noodoe", value: "NOODOE" },
+              { displayName: "OpConnect", value: "OpConnect" },
+              { displayName: "Petro-Canada", value: "PETROCAN" },
+              { displayName: "PowerFlex", value: "POWERFLEX" },
+              { displayName: "Red E Charging", value: "RED_E" },
+              {
+                displayName: "Rivian Adventure Network",
+                value: "RIVIAN_ADVENTURE",
+              },
+              { displayName: "Rivian Waypoints", value: "RIVIAN_WAYPOINTS" },
+              { displayName: "SemaConnect", value: "SemaCharge Network" },
+              { displayName: "Shell Recharge", value: "SHELL_RECHARGE" },
+              {
+                displayName: "Sun Country Highway",
+                value: "Sun Country Highway",
+              },
+              { displayName: "Swtch Energy", value: "SWTCH" },
+              { displayName: "Tesla Destination", value: "Tesla Destination" },
+              { displayName: "Tesla Supercharger", value: "Tesla" },
+              { displayName: "Universal EV Chargers", value: "UNIVERSAL" },
+              { displayName: "Volta", value: "Volta" },
+              { displayName: "WAVE", value: "WAVE" },
+              { displayName: "ZEF Network", value: "ZEFNET" },
+            ]}
+            selectedFilters={filters}
+            updateFilter={updateFilter}
+          />
+          <FilterItems
+            title="Status"
+            parameter="status_code"
+            list={[
+              { displayName: "Available", value: "E" },
+              { displayName: "Planned", value: "P" },
+              { displayName: "Temporarily Unavailable", value: "T" },
+            ]}
+            selectedFilters={filters}
+            updateFilter={updateFilter}
+          />
+          <FilterItems
+            title="Status"
+            parameter="ev_pricing"
+            list={[
+              { displayName: "Free", value: "Free" },
+              { displayName: "Paid", value: "Paid" },
+            ]}
+            selectedFilters={filters}
+            updateFilter={updateFilter}
           />
           <div
             onClick={handleFilters}
