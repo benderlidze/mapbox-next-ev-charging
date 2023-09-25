@@ -17,10 +17,11 @@ export const FiltersButton = () => {
   const handleFilters = () => {
     console.log("filters", filters);
     setIsLoading(true);
-    const filtersData = Array.from(filters).map((d) => {
-      return `${d[0]}=${d[1].join(",")}`;
-      //return { name: d[0], values: d[1] };
-    });
+    const filtersData = Array.from(filters)
+      .filter((d) => d[1].length > 0)
+      .map((d) => {
+        return `${d[0]}=${d[1].join(",")}`;
+      });
 
     fetch("/api/load-pins/", {
       method: "POST",
