@@ -17,6 +17,8 @@ export const FilterItems = ({
   selectedFilters,
   updateFilter,
 }: FilterItemsProps) => {
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = e.target;
     console.log("id", id);
@@ -30,7 +32,7 @@ export const FilterItems = ({
     const isChecked = selected?.includes(item.value);
 
     return (
-      <div className="flex">
+      <div className="flex truncate">
         <input
           type="checkbox"
           id={item.value}
@@ -48,13 +50,27 @@ export const FilterItems = ({
     );
   };
 
+  const ShowMore = () => {
+    return (
+      <div
+        className="cursor-pointer underline font-semibold "
+        onClick={() => {
+          setItemsPerPage(list.length);
+        }}
+      >
+        Show More
+      </div>
+    );
+  };
+
   return (
     <div className="m-3">
       <div className="font-bold">{title}</div>
-      <div className="grid grid-cols-5 gap-4 m-3">
-        {list.map((item) => (
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-4 m-3">
+        {list.splice(0, itemsPerPage).map((item) => (
           <FilterItem item={item} key={item.value} />
         ))}
+        {list.length > 10 && <ShowMore />}
       </div>
     </div>
   );
