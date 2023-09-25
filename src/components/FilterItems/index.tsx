@@ -53,7 +53,7 @@ export const FilterItems = ({
   const ShowMore = () => {
     return (
       <div
-        className="cursor-pointer underline font-semibold "
+        className=" m-2 cursor-pointer underline font-semibold "
         onClick={() => {
           setItemsPerPage(list.length);
         }}
@@ -70,8 +70,8 @@ export const FilterItems = ({
         {list.splice(0, itemsPerPage).map((item) => (
           <FilterItem item={item} key={item.value} />
         ))}
-        {list.length > 10 && <ShowMore />}
       </div>
+      {list.length > 10 && <ShowMore />}
     </div>
   );
 };
