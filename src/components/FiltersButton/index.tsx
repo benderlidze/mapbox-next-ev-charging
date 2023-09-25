@@ -53,23 +53,34 @@ export const FiltersButton = () => {
       {isOpen && (
         <div className="w-10/12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-90 bg-white border rounded-xl shadow-md p-4">
           FILTERS
+          <div
+            className="absolute top-0 right-0 p-2 cursor-pointer"
+            onClick={() => setIsOpen(false)}
+          >
+            <img src="/icons/close.svg" alt="" width={40} />
+          </div>
           <FilterItems
             title="Charger type"
             parameter="ev_charging_level"
-            list={["Level 1", "dc_fast"]}
+            list={[
+              { displayName: "All", value: "all" },
+              { displayName: "Level 1", value: "1" },
+              { displayName: "Level 2", value: "2" },
+              { displayName: "DC Fast", value: "dc_fast" },
+            ]}
           />
           <FilterItems
             title="Connector type"
             parameter="ev_connector_type"
             list={[
-              "All",
-              "NEMA1450",
-              "NEMA515",
-              "CMADEMO",
-              "TESLA",
-              "NEMA520",
-              "J1772",
-              "J1772COMBO",
+              { displayName: "All", value: "all" },
+              { displayName: "NEMA 14-50", value: "NEMA1450" },
+              { displayName: "NEMA 5-15", value: "NEMA515" },
+              { displayName: "NEMA 5-20", value: "NEMA520" },
+              { displayName: "J1772", value: "J1772" },
+              { displayName: "CCS", value: "J1772COMBO" },
+              { displayName: "CHAdeMO", value: "CHADEMO" },
+              { displayName: "Tesla", value: "TESLA" },
             ]}
           />
           <div
