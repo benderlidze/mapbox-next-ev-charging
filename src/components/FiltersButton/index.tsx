@@ -22,7 +22,7 @@ export const FiltersButton = () => {
       .map((d) => {
         return `${d[0]}=${d[1].join(",")}`;
       });
-
+    console.log("filtersData", filtersData);
     fetch("/api/load-pins/", {
       method: "POST",
       headers: {
@@ -41,6 +41,32 @@ export const FiltersButton = () => {
         console.log("err", err);
       });
   };
+
+  useEffect(() => {
+    //initialize
+    fetch("/api/load-pins/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify([
+        {
+          ev_connector_type: "all",
+          state: "CA",
+        },
+      ]),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+        updatePins(data.fuel_stations);
+        setIsLoading(false);
+        setIsOpen(false);
+      })
+      .catch((err) => {
+        console.log("err", err);
+      });
+  }, []);
 
   return (
     <>
