@@ -19,8 +19,7 @@ export const FilterItems = ({
 }: FilterItemsProps) => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id } = e.target;
+  const handleChange = (id: string) => {
     console.log("id", id);
     updateFilter(parameter, id);
   };
@@ -30,18 +29,19 @@ export const FilterItems = ({
   const FilterItem = ({ item }: { item: EV_Prop }) => {
     const selected = selectedFilters.get(parameter);
     const isChecked = selected?.includes(item.value);
+    const id = parameter + "_" + item.value;
 
     return (
       <div className="flex truncate">
         <input
           type="checkbox"
-          id={item.value}
+          id={id}
           className="mr-2 cursor-pointer"
-          onChange={handleChange}
+          onChange={() => handleChange(item.value)}
           checked={isChecked}
         />
         <label
-          htmlFor={item.value}
+          htmlFor={id}
           className="cursor-pointer whitespace-nowrap select-none"
         >
           {item.displayName}
@@ -53,7 +53,7 @@ export const FilterItems = ({
   const ShowMore = () => {
     return (
       <div
-        className=" m-2 cursor-pointer underline font-semibold "
+        className="m-2 cursor-pointer underline font-semibold "
         onClick={() => {
           setItemsPerPage(list.length);
         }}
