@@ -1,7 +1,7 @@
 import { use, useEffect, useState } from "react";
 import { Tabs } from "../Tabs";
 
-export interface Pin {
+export interface PinProps {
   latitude: number;
   longitude: number;
   city: string;
@@ -13,11 +13,15 @@ export interface Pin {
   ev_network_web: string;
   ev_pricing: string;
   access_days_time: string;
+
+  ev_dc_fast_num: number;
+  ev_level1_evse_num: number;
+  ev_level2_evse_num: number;
 }
 
 interface PinPopupProps {
-  pin: Pin;
-  setSelectedPin: (pin: Pin | undefined) => void;
+  pin: PinProps;
+  setSelectedPin: (pin: PinProps | undefined) => void;
 }
 
 export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
