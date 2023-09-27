@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Pin } from "@components/PinPopup";
+import { PinProps } from "@components/PinPopup";
 import { ChargerType, ChargerTypes } from "@components/ChargerTypes";
 
 type TabName = "Info" | "Chargers" | "Check-in" | "Reviews";
@@ -10,7 +10,7 @@ interface TabContentProps {
   children: React.ReactNode;
 }
 
-export const Tabs = ({ pin }: { pin: Pin }) => {
+export const Tabs = ({ pin }: { pin: PinProps }) => {
   const [selected, setSelected] = useState<string>("Info");
 
   const TabItem = (name: string) => {
