@@ -1,6 +1,6 @@
 import { use, useEffect, useState } from "react";
 import { Tabs } from "../Tabs";
-
+import { useDirectionsStore } from "@store/directions";
 export interface PinProps {
   latitude: number;
   longitude: number;
@@ -25,6 +25,33 @@ interface PinPopupProps {
 }
 
 export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
+  const { updateRoute } = useDirectionsStore();
+
+  const handleGetDirectionsClick = () => {
+    console.log("get directions");
+    //get uuser position
+    navigator.geolocation.getCurrentPosition((position) => {
+      const userPosition = `${position.coords.longitude},${position.coords.latitude}`;
+      const destination = `${pin.longitude},${pin.latitude}`;
+
+      //&overview=full
+      fetch(
+        `https://api.mapbox.com/directions/v5/mapbox/driving/${userPosition};${destination}?steps=true&geometries=geojson&access_token=` +
+          process.env.NEXT_PUBLIC_MAPBOX_TOKEN
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          // Process the directions data and display it on the map or in your UI
+          console.log(data);
+          updateRoute(data.routes);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+      console.log(position);
+    });
+  };
+
   return (
     <div className="w-80 min-h-[41rem] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-90 bg-white shadow-md ">
       <div
@@ -73,10 +100,12 @@ export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
             <div className="text-sm">5 mins</div>
           </div>
 
-          <div className="select-none flex justify-center   text-white rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 cursor-pointer p-2 width-fit mt-2 mb-2">
-            Get direction
+          <div
+            onClick={handleGetDirectionsClick}
+            className="select-none flex justify-center   text-white rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 cursor-pointer p-2 width-fit mt-2 mb-2"
+          >
+            Get directions
           </div>
-
           <Tabs pin={pin} />
         </div>
       </div>

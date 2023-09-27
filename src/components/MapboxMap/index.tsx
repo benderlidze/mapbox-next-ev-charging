@@ -1,5 +1,6 @@
 "use client";
 import { usePinsStore } from "@store/pins";
+import { useDirectionsStore } from "@store/directions";
 import * as React from "react";
 import Map, {
   Marker,
@@ -25,12 +26,14 @@ import {
   chargingPlugsCount,
 } from "@components/MapLayers";
 import { Pin } from "@components/Pin";
+import { useEffect } from "react";
+import { Directions } from "@components/Directions";
 
 export const MapboxMap = () => {
   const pins = usePinsStore((state) => state.pins);
   const [selectedPin, setSelectedPin] = React.useState<PinProps>();
 
-  React.useEffect(() => {
+  useEffect(() => {
     console.log("MapboxMap mounted");
     return () => {
       console.log("MapboxMap unmounted");
@@ -61,28 +64,28 @@ export const MapboxMap = () => {
       })
     : [];
 
-  const geojson = pins
-    ? pins.map((pin: PinProps, index) => {
-        const count =
-          pin.ev_dc_fast_num + pin.ev_level1_evse_num + pin.ev_level2_evse_num;
+  // const geojson = pins
+  //   ? pins.map((pin: PinProps, index) => {
+  //       const count =
+  //         pin.ev_dc_fast_num + pin.ev_level1_evse_num + pin.ev_level2_evse_num;
 
-        return {
-          type: "Feature",
-          properties: {
-            ...pin,
-            charging_plugs_count: count,
-          },
-          geometry: {
-            type: "Point",
-            coordinates: [pin.longitude, pin.latitude],
-          },
-        };
-      })
-    : [];
-  const featureCollection = {
-    type: "FeatureCollection",
-    features: geojson,
-  } as GeoJSON.FeatureCollection<GeoJSON.Geometry>;
+  //       return {
+  //         type: "Feature",
+  //         properties: {
+  //           ...pin,
+  //           charging_plugs_count: count,
+  //         },
+  //         geometry: {
+  //           type: "Point",
+  //           coordinates: [pin.longitude, pin.latitude],
+  //         },
+  //       };
+  //     })
+  //   : [];
+  // const featureCollection = {
+  //   type: "FeatureCollection",
+  //   features: geojson,
+  // } as GeoJSON.FeatureCollection<GeoJSON.Geometry>;
 
   return (
     <div className="flex flex-grow">
@@ -116,6 +119,7 @@ export const MapboxMap = () => {
           <Layer {...chargingPlugsCount} />
         </Source> 
         */}
+        <Directions />
       </Map>
     </div>
   );
