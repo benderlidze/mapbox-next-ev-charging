@@ -19,9 +19,25 @@ export const FilterItems = ({
 }: FilterItemsProps) => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const handleChange = (id: string) => {
-    console.log("id", id);
+  const handleChange = (id: string, checked: boolean | undefined) => {
+    console.log("id", parameter, id);
     updateFilter(parameter, id);
+
+    if (id === "all") {
+      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!ALLLLL", checked, list);
+
+      list
+        .filter((item) => item.value !== "all")
+        .forEach((item) => {
+          const selected = selectedFilters.get(parameter);
+          const isChecked = selected?.includes(item.value);
+          if (!checked) {
+            !isChecked && updateFilter(parameter, item.value);
+          } else {
+            isChecked && updateFilter(parameter, item.value);
+          }
+        });
+    }
   };
 
   console.log("filters=====================>>>>>", selectedFilters);
@@ -37,7 +53,7 @@ export const FilterItems = ({
           type="checkbox"
           id={id}
           className="mr-2 cursor-pointer"
-          onChange={() => handleChange(item.value)}
+          onChange={() => handleChange(item.value, isChecked)}
           checked={isChecked}
         />
         <label
@@ -63,11 +79,13 @@ export const FilterItems = ({
     );
   };
 
+  console.log("list", list);
+
   return (
     <div className="m-3">
       <div className="font-bold">{title}</div>
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-5 gap-4 m-3">
-        {list.splice(0, itemsPerPage).map((item) => (
+        {list.slice(0, itemsPerPage).map((item) => (
           <FilterItem item={item} key={item.value} />
         ))}
       </div>
