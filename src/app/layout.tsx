@@ -23,7 +23,10 @@ export default function RootLayout({
         <main className="flex min-h-screen flex-col  ">
           <NextAuthProvider>
             <div className="flex p-2 flex-row align-center justify-between h-16 items-center">
-              <div>MAPZ</div>
+              <div className="flex flex-row align-center justify-between items-center">
+                <img src="logo.png" className="mr-2" />
+                <span className=" text-2xl font-bold ">Mapz</span>
+              </div>
               <FiltersButton />
               <AuthButton />
             </div>
