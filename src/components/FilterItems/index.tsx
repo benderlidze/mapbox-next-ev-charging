@@ -20,12 +20,19 @@ export const FilterItems = ({
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const handleChange = (id: string, checked: boolean | undefined) => {
-    console.log("id", parameter, id);
+    console.log("id", parameter, id, checked, list);
     updateFilter(parameter, id);
 
-    if (id === "all") {
-      console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!ALLLLL", checked, list);
+    const selectedItemsLength = selectedFilters.get(parameter)?.length || 0;
 
+    if (id !== "all" && selectedItemsLength + 1 === list.length) {
+      console.log("here");
+      updateFilter(parameter, "all");
+      return;
+    }
+
+    if (id === "all") {
+      // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!ALLLLL", checked, list);
       list
         .filter((item) => item.value !== "all")
         .forEach((item) => {
@@ -40,7 +47,7 @@ export const FilterItems = ({
     }
   };
 
-  console.log("filters=====================>>>>>", selectedFilters);
+  // console.log("filters=====================>>>>>", selectedFilters);
 
   const FilterItem = ({ item }: { item: EV_Prop }) => {
     const selected = selectedFilters.get(parameter);
@@ -78,8 +85,6 @@ export const FilterItems = ({
       </div>
     );
   };
-
-  console.log("list", list);
 
   return (
     <div className="m-3">
