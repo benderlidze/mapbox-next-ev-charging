@@ -38,9 +38,20 @@ export const unclusteredPointLayer: LayerProps = {
   filter: ["!", ["has", "point_count"]],
   paint: {
     "circle-color": "#11b4da",
-    "circle-radius": 12,
+    "circle-radius": 10,
     "circle-stroke-width": 2,
     "circle-stroke-color": "#fff",
+  },
+};
+
+export const chargingPin: LayerProps = {
+  id: "charging-pin",
+  type: "symbol",
+  source: "earthquakes",
+  layout: {
+    "icon-image": "ev-icon",
+    "icon-size": 1.25,
+    "icon-allow-overlap": true,
   },
 };
 
@@ -48,13 +59,13 @@ export const chargingPlugsCount: LayerProps = {
   id: "cluster-count",
   type: "symbol",
   source: "earthquakes",
-  filter: ["!", ["has", "point_count"]],
   layout: {
     "text-field": ["get", "charging_plugs_count"],
     "text-font": ["DIN Offc Pro Medium", "Arial Unicode MS Bold"],
     "text-size": 13,
     "text-allow-overlap": true,
-    // ?bold
+    "text-offset": [0, -0.2],
+    "text-anchor": "center",
   },
   paint: {
     "text-color": "#ffffff",

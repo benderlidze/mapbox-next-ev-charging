@@ -25,25 +25,26 @@ export const FilterItems = ({
 
     const selectedItemsLength = selectedFilters.get(parameter)?.length || 0;
 
-    if (id !== "all" && selectedItemsLength + 1 === list.length) {
-      console.log("here");
-      updateFilter(parameter, "all");
-      return;
-    }
+    if (list.map((l) => l.value).includes("all")) {
+      //process all clicking
+      if (id !== "all" && selectedItemsLength + 1 === list.length) {
+        updateFilter(parameter, "all");
+        return;
+      }
 
-    if (id === "all") {
-      // console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!ALLLLL", checked, list);
-      list
-        .filter((item) => item.value !== "all")
-        .forEach((item) => {
-          const selected = selectedFilters.get(parameter);
-          const isChecked = selected?.includes(item.value);
-          if (!checked) {
-            !isChecked && updateFilter(parameter, item.value);
-          } else {
-            isChecked && updateFilter(parameter, item.value);
-          }
-        });
+      if (id === "all") {
+        list
+          .filter((item) => item.value !== "all")
+          .forEach((item) => {
+            const selected = selectedFilters.get(parameter);
+            const isChecked = selected?.includes(item.value);
+            if (!checked) {
+              !isChecked && updateFilter(parameter, item.value);
+            } else {
+              isChecked && updateFilter(parameter, item.value);
+            }
+          });
+      }
     }
   };
 

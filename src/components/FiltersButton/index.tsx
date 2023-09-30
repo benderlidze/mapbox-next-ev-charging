@@ -20,7 +20,9 @@ export const FiltersButton = () => {
     const filtersData = Array.from(filters)
       .filter((d) => d[1].length > 0)
       .map((d) => {
-        return `${d[0]}=${d[1].join(",")}`;
+        return d[1].includes("all")
+          ? `${d[0]}=all`
+          : `${d[0]}=${d[1].join(",")}`;
       });
     console.log("filtersData", filtersData);
     fetch("/api/load-pins/", {
@@ -31,9 +33,11 @@ export const FiltersButton = () => {
       body: JSON.stringify(filtersData),
     })
       .then((res) => res.json())
-      .then((data) => {
-        console.log("data", data);
-        updatePins(data.fuel_stations);
+      .then((results) => {
+        console.log("results", results);
+        console.log("URL===========>>>>", results.url);
+
+        updatePins(results.data.fuel_stations);
         setIsLoading(false);
         setIsOpen(false);
       })

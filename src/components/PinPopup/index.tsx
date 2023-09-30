@@ -2,6 +2,7 @@ import { use, useEffect, useState } from "react";
 import { Tabs } from "../Tabs";
 import { useDirectionsStore } from "@store/directions";
 export interface PinProps {
+  id: number;
   latitude: number;
   longitude: number;
   city: string;
