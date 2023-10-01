@@ -28,6 +28,7 @@ interface PinPopupProps {
 export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
   const { updateRoute } = useDirectionsStore();
 
+  const handleCheckInClick = () => {};
   const handleGetDirectionsClick = () => {
     console.log("get directions");
     //get uuser position
@@ -117,7 +118,7 @@ export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
   };
 
   return (
-    <div className="w-80 min-h-[41rem] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-90 bg-white shadow-md ">
+    <div className="w-80 min-h-[41rem] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-100 bg-white shadow-md ">
       <div
         className="absolute top-0 right-0 p-2 cursor-pointer"
         onClick={() => {
@@ -129,7 +130,17 @@ export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
       <div className="flex flex-col">
         <img src={networkIMage(pin.ev_network)} width={"100%"} />
         <div className="p-4">
-          <div className="text-lg font-bold">{pin.station_name}</div>
+          <div className="text-lg font-bold flex flex-row justify-between">
+            <div className="w-10/12">{pin.station_name}</div>
+            <div className="flex justify-center align-middle ">
+              <img
+                className="cursor-pointer "
+                src="/icons/like-outline.svg"
+                alt=""
+                width={30}
+              />
+            </div>
+          </div>
           <div className="flex flex-row justify-between ">
             <div>{pin.street_address}</div>
             <div>
@@ -161,12 +172,21 @@ export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
             <div className="text-sm">5 mins</div>
           </div>
 
-          <div
-            onClick={handleGetDirectionsClick}
-            className="select-none flex justify-center   text-white rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 cursor-pointer p-2 width-fit mt-2 mb-2"
-          >
-            Get directions
+          <div className="flex flex-row gap-1">
+            <div
+              onClick={handleGetDirectionsClick}
+              className="select-none w-1/2 flex justify-center text-white rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 cursor-pointer p-2 width-fit mt-2 mb-2"
+            >
+              Get directions
+            </div>
+            <div
+              onClick={handleCheckInClick}
+              className="select-none w-1/2 flex justify-center text-white rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 cursor-pointer p-2 width-fit mt-2 mb-2"
+            >
+              Check in
+            </div>
           </div>
+
           <Tabs pin={pin} />
         </div>
       </div>
