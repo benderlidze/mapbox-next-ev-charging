@@ -53,6 +53,69 @@ export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
     });
   };
 
+  const allAvailableNetworks = [
+    "SHELL_RECHARGE",
+    "Non-Networked",
+    "Volta",
+    "EV Connect",
+    "POWERFLEX",
+    "ChargePoint Network",
+    "OpConnect",
+    "EVGATEWAY",
+    null,
+    "eVgo Network",
+    "AMPUP",
+    "EVCS",
+    "Blink Network",
+    "UNIVERSAL",
+    "FCN",
+    "Tesla",
+    "ZEFNET",
+    "Tesla Destination",
+    "Electrify America",
+    "CHARGELAB",
+    "LIVINGSTON",
+    "FLO",
+    "FPLEV",
+    "7CHARGE",
+    "EVMATCH",
+    "RIVIAN_WAYPOINTS",
+    "RED_E",
+    "SWTCH",
+    "CIRCLE_K",
+    "WAVE",
+    "EVRANGE",
+    "GRAVITI_ENERGY",
+    "FLASH",
+    "RIVIAN_ADVENTURE",
+    "CHARGEUP",
+    "JULE",
+    "NOODOE",
+    "CHARGIE",
+    "LOOP",
+    "REVEL",
+  ];
+
+  const networkIMage = (network: PinProps["ev_network"]) => {
+    const nameToNetwork = {
+      "Blink Network": "Blink Network.jpg",
+      "ChargePoint Network": "ChargePoint Network.jpg",
+      "Electrify America": "Electrify America.jpg",
+      "EV Connect": "EV Connect.jpg",
+      "eVgo Network": "eVgo Network.jpg",
+      Tesla: "Tesla.png",
+      "Tesla Destination": "Tesla.jpg",
+    };
+
+    if (nameToNetwork[network as keyof typeof nameToNetwork]) {
+      return (
+        "ev-images/" + nameToNetwork[network as keyof typeof nameToNetwork]
+      );
+    } else {
+      return "ev-images/other.jpg";
+    }
+  };
+
   return (
     <div className="w-80 min-h-[41rem] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-90 bg-white shadow-md ">
       <div
@@ -64,10 +127,7 @@ export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
         <img src="/icons/close.svg" alt="" width={40} />
       </div>
       <div className="flex flex-col">
-        <img
-          src="https://media.drivingelectric.com/image/private/s--AymR0BqQ--/f_auto,t_primary-image-desktop@1/v1597772418/drivingelectric/2018-11/2cteslamodel3.jpg"
-          width={"100%"}
-        />
+        <img src={networkIMage(pin.ev_network)} width={"100%"} />
         <div className="p-4">
           <div className="text-lg font-bold">{pin.station_name}</div>
           <div className="flex flex-row justify-between ">
