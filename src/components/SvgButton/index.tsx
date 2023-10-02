@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 interface SvgButtonProps {
-  icon: React.ReactNode;
+  icon: string;
   onClick: () => void;
 }
 
