@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { PinProps } from "@components/PinPopup";
 import { ChargerType, ChargerTypes } from "@components/ChargerTypes";
+import { UserCheckIn } from "../UserCheckIn";
+import { FiltersButton } from "@components/FiltersButton";
+import { SvgButton } from "../SvgButton";
 
 type TabName = "Info" | "Chargers" | "Check-in" | "Reviews";
 const tabsList: TabName[] = ["Info", "Chargers", "Check-in", "Reviews"];
@@ -71,6 +74,37 @@ export const Tabs = ({ pin }: { pin: PinProps }) => {
           <div className="flex flex-row justify-between p-3">
             <div className="text-sm">{pin.access_days_time}</div>
             <div className="text-sm"></div>
+          </div>
+        </div>
+      </TabContentWrapper>
+
+      <TabContentWrapper tabName="Check-in">
+        <div>
+          <div className="flex flex-col gap-4 p-2 mt-4 border border-gray-00 rounded-lg bg-slate-100">
+            <div className="flex flex-row-reverse">
+              <SvgButton icon="/icons/filter.svg" onClick={() => {}} />
+            </div>
+            <UserCheckIn
+              userName="Alice"
+              userCar="Tesla Model 3"
+              time="2 hours ago"
+              stars={4}
+              comment="This is a comment"
+            />
+            <UserCheckIn
+              userName="Bob"
+              userCar="VW id 4"
+              time="2 hours ago"
+              stars={4}
+              comment="This is a comment"
+            />
+            <UserCheckIn
+              userName="Susan"
+              userCar="Mercedes EQS"
+              time="2 hours ago"
+              stars={4}
+              comment="This is a comment"
+            />
           </div>
         </div>
       </TabContentWrapper>

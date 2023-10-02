@@ -92,12 +92,15 @@ export const MapboxMap = () => {
   const onClick = useCallback(
     (event: MapLayerMouseEvent) => {
       const feature = event.features && event.features[0];
-      console.log("feature", feature);
-      console.log("pins", pins);
-      const id = feature && feature.properties && feature.properties.id;
-      const pin = pins.find((pin: PinProps) => pin.id === id);
-      console.log("pin", pin);
-      setSelectedPin(pin);
+
+      if (pins) {
+        console.log("feature", feature);
+        console.log("pins", pins);
+        const id = feature && feature.properties && feature.properties.id;
+        const pin = pins.find((pin: PinProps) => pin.id === id);
+        console.log("pin", pin);
+        setSelectedPin(pin);
+      }
     },
     [pins]
   );
