@@ -1,6 +1,7 @@
 import { use, useEffect, useState } from "react";
 import { Tabs } from "../Tabs";
 import { useDirectionsStore } from "@store/directions";
+import { CheckIn } from "../CheckIn";
 export interface PinProps {
   id: number;
   latitude: number;
@@ -27,8 +28,11 @@ interface PinPopupProps {
 
 export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
   const { updateRoute } = useDirectionsStore();
+  const [checkInVisible, setCheckInVisible] = useState<boolean>(false);
 
-  const handleCheckInClick = () => {};
+  const handleCheckInClick = () => {
+    setCheckInVisible(!checkInVisible);
+  };
   const handleGetDirectionsClick = () => {
     console.log("get directions");
     //get uuser position
@@ -186,8 +190,8 @@ export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
               Check in
             </div>
           </div>
-
-          <Tabs pin={pin} />
+          {checkInVisible && <CheckIn pin={pin} />}
+          {!checkInVisible && <Tabs pin={pin} />}
         </div>
       </div>
     </div>
