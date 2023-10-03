@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { PinProps } from "@components/PinPopup";
 import { ChargerType, ChargerTypes } from "@components/ChargerTypes";
-import { UserCheckIn } from "../UserCheckIn";
-import { FiltersButton } from "@components/FiltersButton";
-import { SvgButton } from "../SvgButton";
+import { UserCheckIn } from "@components/UserCheckIn";
+import { SvgButton } from "@components/SvgButton";
+import { UserReview } from "@components/UserReview";
 
 type TabName = "Info" | "Chargers" | "Check-in" | "Reviews";
 const tabsList: TabName[] = ["Info", "Chargers", "Check-in", "Reviews"];
@@ -104,6 +104,30 @@ export const Tabs = ({ pin }: { pin: PinProps }) => {
               time="2 hours ago"
               stars={4}
               comment="This is a comment"
+            />
+          </div>
+        </div>
+      </TabContentWrapper>
+
+      <TabContentWrapper tabName="Reviews">
+        <div>
+          <div className="flex flex-col gap-4 p-2 mt-4 border border-gray-00 rounded-lg bg-slate-100">
+            <div className="flex flex-row-reverse">
+              <SvgButton icon="/icons/filter.svg" onClick={() => {}} />
+            </div>
+            <UserReview
+              userName="Alice"
+              userCar="Tesla Model 3"
+              time="2 hours ago"
+              stars={4}
+              comment="Often occupied by car sharing company, and cable is not even charging. Seems like they just occupying space and shuffling between cars."
+            />
+            <UserReview
+              userName="John"
+              userCar="Tesla Model x"
+              time="2 hours ago"
+              stars={4}
+              comment="Often occupied by car sharing company, and cable is not even charging. Seems like they just occupying space and shuffling between cars."
             />
           </div>
         </div>
