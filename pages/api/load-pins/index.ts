@@ -6,6 +6,7 @@ export default async function GET(req: NextApiRequest, res: NextApiResponse) {
   // const apiKey = "Pf2pX3LeQgclbSAbkvRp927FRkYnVqMZEeYglPS4";
   const apiKey = "DEMO_KEY";
   const query = req.body.join("&");
+
   const url = `https://developer.nrel.gov/api/alt-fuel-stations/v1.json?limit=200&fuel_type=ELEC&${query}`;
 
   console.log("url", url);

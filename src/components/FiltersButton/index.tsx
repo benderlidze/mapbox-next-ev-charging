@@ -53,17 +53,13 @@ export const FiltersButton = () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify([
-        {
-          ev_connector_type: "all",
-          state: "CA",
-        },
-      ]),
+      body: JSON.stringify([`ev_connector_type=all`, `state=CA`]),
     })
       .then((res) => res.json())
       .then((data) => {
         console.log("data", data);
-        updatePins(data.fuel_stations);
+        console.log("data.fuel_stations", data.fuel_stations);
+        updatePins(data.data.fuel_stations);
         setIsLoading(false);
         setIsOpen(false);
       })

@@ -8,7 +8,10 @@ interface CheckInProps {
 }
 export const CheckIn = ({ pin }: CheckInProps) => {
   return (
-    <div className="mt-4 flex flex-col gap-2">
+    <div
+      className="flex flex-col gap-2 overflow-auto max-h-[300px] 
+    sm:overflow-visible sm:max-h-screen"
+    >
       <div className="flex flex-row justify-between items-center">
         <div className="text-xl">Overall rating</div>
         <div className="text-sm">
