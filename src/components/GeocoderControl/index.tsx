@@ -9,9 +9,7 @@ type GeocoderControlProps = Omit<
   "accessToken" | "mapboxgl" | "marker"
 > & {
   marker?: boolean | Omit<MarkerProps, "longitude" | "latitude">;
-
   position: ControlPosition;
-
   onLoading?: (e: object) => void;
   onResults?: (e: object) => void;
   onResult?: (e: object) => void;
@@ -28,22 +26,22 @@ export function Geocoder(props: GeocoderControlProps) {
         ...props,
         marker: false,
         accessToken: process.env.NEXT_PUBLIC_MAPBOX_TOKEN || "",
+        flyTo: {
+          maxZoom: 13, // If you want your result not to go further than a specific zoom
+        },
       });
-      // ctrl.on("loading", props.onLoading);
-      // ctrl.on("results", props.onResults);
-      ctrl.on("result", (evt) => {
-        // props.onResult(evt);
-        const { result } = evt;
-        const location =
-          result &&
-          (result.center ||
-            (result.geometry?.type === "Point" && result.geometry.coordinates));
-        if (location && props.marker) {
-        } else {
-          setMarker(null);
-        }
-      });
-      // ctrl.on("error", props.onError);
+      if (props.onLoading) {
+        ctrl.on("loading", props.onLoading);
+      }
+      if (props.onResults) {
+        ctrl.on("results", props.onResults);
+      }
+      if (props.onResult) {
+        ctrl.on("result", props.onResult);
+      }
+      if (props.onError) {
+        ctrl.on("error", props.onError);
+      }
       return ctrl;
     },
     {

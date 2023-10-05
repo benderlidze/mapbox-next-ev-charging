@@ -2,20 +2,7 @@
 import { usePinsStore } from "@store/pins";
 import { useDirectionsStore } from "@store/directions";
 import * as React from "react";
-import Map, {
-  Marker,
-  Popup,
-  NavigationControl,
-  FullscreenControl,
-  ScaleControl,
-  GeolocateControl,
-  MapboxEvent,
-  MapMouseEvent,
-  Source,
-  Layer,
-  MapRef,
-  MapLayerMouseEvent,
-} from "react-map-gl";
+import Map, { Source, Layer, MapRef, MapLayerMouseEvent } from "react-map-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -33,7 +20,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Directions } from "@components/Directions";
 
 export const MapboxMap = () => {
-  const pins = usePinsStore((state) => state.pins);
+  const { pins, updatePins } = usePinsStore();
+  // const updatePins = usePinsStore((state) => state.updatePins);
+
   const [selectedPin, setSelectedPin] = useState<PinProps>();
   const [cursor, setCursor] = useState<string>("auto");
 
@@ -148,7 +137,33 @@ export const MapboxMap = () => {
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >
-        <Geocoder position={"top-left"} />
+        <Geocoder
+          position={"top-left"}
+          onResult={(e: any) => {
+            console.log("e======>", e);
+            console.log("e======>", e.result.place_type);
+
+            if (e && e.result.place_type.includes("postcode")) {
+              const postcode = e.result.text;
+              fetch("/api/load-pins/", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify([`zip=${postcode}`]),
+              })
+                .then((res) => res.json())
+                .then((data) => {
+                  console.log("data", data);
+                  console.log("data.fuel_stations", data.fuel_stations);
+                  updatePins(data.data.fuel_stations);
+                })
+                .catch((err) => {
+                  console.log("err", err);
+                });
+            }
+          }}
+        />
 
         {/* {evPins} */}
 
