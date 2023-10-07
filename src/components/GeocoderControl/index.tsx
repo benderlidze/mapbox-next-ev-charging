@@ -29,6 +29,7 @@ export function Geocoder(props: GeocoderControlProps) {
         flyTo: {
           maxZoom: 13, // If you want your result not to go further than a specific zoom
         },
+        placeholder: "Search (Enter a State or Zip)",
       });
       if (props.onLoading) {
         ctrl.on("loading", props.onLoading);
