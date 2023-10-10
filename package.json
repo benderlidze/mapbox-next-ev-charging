@@ -9,26 +9,26 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mapbox/mapbox-gl-geocoder": "latest",
+    "@supabase/auth-helpers-nextjs": "^0.8.1",
+    "@supabase/supabase-js": "^2.38.0",
     "@tanstack/react-query": "^4.35.3",
+    "@types/mapbox-gl": "latest",
+    "@types/mapbox__mapbox-gl-geocoder": "latest",
     "@types/node": "20.6.2",
     "@types/react": "18.2.22",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
+    "mapbox-gl": "latest",
     "next": "13.4.19",
-    "next-auth": "^4.23.1",
     "postcss": "8.4.30",
-    "prisma": "^5.3.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-map-gl": "latest",
     "tailwindcss": "3.3.3",
     "typescript": "5.2.2",
-    "zustand": "^4.4.1",
-    "@mapbox/mapbox-gl-geocoder": "latest",
-    "@types/mapbox__mapbox-gl-geocoder": "latest",
-    "@types/mapbox-gl": "latest",
-    "react-map-gl": "latest",
-    "mapbox-gl": "latest"
+    "zustand": "^4.4.1"
   }
 }
