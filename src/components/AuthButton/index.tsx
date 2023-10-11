@@ -3,7 +3,6 @@ import {
   Session,
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
-import { signIn, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
 
 export const AuthButton = () => {
@@ -13,29 +12,23 @@ export const AuthButton = () => {
     setIsOpen(!isOpen);
   };
 
-  // const UserButton = () => {
-  //   if (session && session.user?.name) {
-  //     return (
-  //       <div className="flex flex-row">
-  //         {session.user?.image && (
-  //           <img
-  //             src={session.user?.image}
-  //             className="w-5 rounded-full mr-2"
-  //             alt="user image"
-  //           />
-  //         )}
-  //         <strong>{session.user.name}</strong>
-  //       </div>
-  //     );
-  //   }
-  // };
-
   const [session, setUser] = useState<Session>();
   const supabase = createClientComponentClient();
 
   const handleLogInGoogle = async () => {
     await supabase.auth.signInWithOAuth({
       provider: "google",
+    });
+  };
+  const handleLogInApple = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "apple",
+    });
+  };
+
+  const handleLogInFacebook = async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: "facebook",
     });
   };
 
@@ -82,10 +75,10 @@ export const AuthButton = () => {
                 <button onClick={handleLogInGoogle}>Sign in with Google</button>
               </div>
               <div className="flex items-center">
-                <button onClick={handleLogInGoogle}>Sign in with Apple</button>
+                <button onClick={handleLogInApple}>Sign in with Apple</button>
               </div>
               <div className="flex items-center">
-                <button onClick={handleLogInGoogle}>Sign in with FB</button>
+                <button onClick={handleLogInFacebook}>Sign in with FB</button>
               </div>
             </div>
           )}

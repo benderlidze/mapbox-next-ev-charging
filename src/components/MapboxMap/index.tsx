@@ -15,19 +15,30 @@ import {
   chargingPlugsCount,
   chargingPin,
 } from "@components/MapLayers";
-import { Pin } from "@components/Pin";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Directions } from "@components/Directions";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { Vehicle } from "@apptypes/vehicle";
 
 export const MapboxMap = () => {
   const { pins, updatePins } = usePinsStore();
   // const updatePins = usePinsStore((state) => state.updatePins);
+  const supabase = createClientComponentClient();
 
   const [selectedPin, setSelectedPin] = useState<PinProps>();
   const [cursor, setCursor] = useState<string>("auto");
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
   useEffect(() => {
     console.log("MapboxMap mounted");
+
+    const getEVCarModels = async () => {
+      const { data, error } = await supabase.from("vehicles").select();
+      console.log("supabase", data);
+      data && setVehicles(data);
+    };
+    getEVCarModels();
+
     return () => {
       console.log("MapboxMap unmounted");
     };
@@ -168,7 +179,11 @@ export const MapboxMap = () => {
         {/* {evPins} */}
 
         {selectedPin && (
-          <PinPopup pin={selectedPin} setSelectedPin={setSelectedPin} />
+          <PinPopup
+            vehicles={vehicles}
+            pin={selectedPin}
+            setSelectedPin={setSelectedPin}
+          />
         )}
 
         <Source

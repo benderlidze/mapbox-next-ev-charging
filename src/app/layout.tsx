@@ -3,7 +3,6 @@ import { FiltersButton } from "@/components/FiltersButton";
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { NextAuthProvider } from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,17 +20,15 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <main className="flex min-h-screen flex-col  ">
-          <NextAuthProvider>
-            <div className="flex p-2 flex-row align-center justify-between h-16 items-center">
-              <div className="flex flex-row align-center justify-between items-center">
-                <img src="logo.png" className="mr-2" />
-                <span className=" text-2xl font-bold ">Mapz</span>
-              </div>
-              <FiltersButton />
-              <AuthButton />
+          <div className="flex p-2 flex-row align-center justify-between h-16 items-center">
+            <div className="flex flex-row align-center justify-between items-center">
+              <img src="logo.png" className="mr-2" />
+              <span className=" text-2xl font-bold ">Mapz</span>
             </div>
-            <div className="flex flex-grow">{children}</div>
-          </NextAuthProvider>
+            <FiltersButton />
+            <AuthButton />
+          </div>
+          <div className="flex flex-grow">{children}</div>
         </main>
       </body>
     </html>

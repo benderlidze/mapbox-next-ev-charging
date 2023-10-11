@@ -1,3 +1,4 @@
+import { Vehicle } from "@apptypes/vehicle";
 import { ChargerType, ChargerTypes } from "@components/ChargerTypes";
 import { PinProps } from "@components/PinPopup";
 import StarRating from "@components/StarRating";
@@ -5,13 +6,31 @@ import { ToggleSwitcher } from "@components/ToggleSwitcher";
 
 interface CheckInProps {
   pin: PinProps;
+  vehicles: Vehicle[];
 }
-export const CheckIn = ({ pin }: CheckInProps) => {
+export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
   return (
     <div
       className="flex flex-col gap-2 overflow-auto max-h-[300px] 
     tall:overflow-visible tall:max-h-screen"
     >
+      <div className="flex flex-row justify-between items-center">
+        <div className="text-xl">Vehicle</div>
+        <div className="text-sm">
+          <select
+            name=""
+            id=""
+            className="w-32 p-2 bg-gray-300 rounded-2xl border-none"
+          >
+            <option value="">Select</option>
+            {vehicles.map((vehicle) => (
+              <option key={vehicle.id} value={vehicle.id}>
+                {vehicle.vehicle}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
       <div className="flex flex-row justify-between items-center">
         <div className="text-xl">Overall rating</div>
         <div className="text-sm">

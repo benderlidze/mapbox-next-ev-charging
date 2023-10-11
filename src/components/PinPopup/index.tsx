@@ -2,6 +2,7 @@ import { use, useEffect, useState } from "react";
 import { Tabs } from "../Tabs";
 import { useDirectionsStore } from "@store/directions";
 import { CheckIn } from "../CheckIn";
+import { Vehicle } from "@apptypes/vehicle";
 export interface PinProps {
   id: number;
   latitude: number;
@@ -24,9 +25,10 @@ export interface PinProps {
 interface PinPopupProps {
   pin: PinProps;
   setSelectedPin: (pin: PinProps | undefined) => void;
+  vehicles: Vehicle[];
 }
 
-export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
+export const PinPopup = ({ pin, setSelectedPin, vehicles }: PinPopupProps) => {
   const { updateRoute } = useDirectionsStore();
   const [checkInVisible, setCheckInVisible] = useState<boolean>(false);
 
@@ -190,7 +192,7 @@ export const PinPopup = ({ pin, setSelectedPin }: PinPopupProps) => {
               Check in
             </div>
           </div>
-          {checkInVisible && <CheckIn pin={pin} />}
+          {checkInVisible && <CheckIn vehicles={vehicles} pin={pin} />}
           {!checkInVisible && <Tabs pin={pin} />}
         </div>
       </div>
