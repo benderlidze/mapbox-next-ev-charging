@@ -8,11 +8,12 @@ interface CheckInProps {
   pin: PinProps;
   vehicles: Vehicle[];
 }
+
 export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
   return (
     <div
       className="flex flex-col gap-2 overflow-auto max-h-[300px] 
-    tall:overflow-visible tall:max-h-screen"
+    tall:overflow-visible tall:max-h-screen "
     >
       <div className="flex flex-row justify-between items-center">
         <div className="text-xl">Vehicle</div>
