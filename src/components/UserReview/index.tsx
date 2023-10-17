@@ -1,5 +1,3 @@
-import StarRating from "../StarRating";
-
 interface UserReviewProps {
   userName: string;
   userCar: string;
