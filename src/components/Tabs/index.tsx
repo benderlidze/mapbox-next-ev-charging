@@ -88,14 +88,14 @@ export const Tabs = ({ pin }: { pin: PinProps }) => {
               userName="Alice"
               userCar="Tesla Model 3"
               time="2 hours ago"
-              stars={4}
+              stars={3}
               comment="This is a comment"
             />
             <UserCheckIn
               userName="Bob"
               userCar="VW id 4"
               time="2 hours ago"
-              stars={4}
+              stars={1}
               comment="This is a comment"
             />
             <UserCheckIn

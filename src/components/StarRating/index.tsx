@@ -1,24 +1,124 @@
-import React from "react";
+import React, { CSSProperties, ReactNode, memo, useState } from "react";
+import { BsStar, BsStarFill, BsStarHalf } from "./icons";
 
-import { GoldStar } from "./goldStar";
-import { GrayStar } from "./grayStar";
+export interface IRatingStarProps {
+  value?: number;
+  count?: number;
+  size?: number | string;
+  isEdit?: boolean;
+  isHalf?: boolean;
+  valueShow?: boolean;
+  emptyIcon?: ReactNode;
+  halfIcon?: ReactNode;
+  filledIcon?: ReactNode;
+  activeColor?: string;
+  inactiveColor?: string;
+  classNames?: string;
+  style?: CSSProperties;
+  onChange?: (nextValue: number) => void;
+  activeColors?: string[];
+}
 
-const StarRating = ({ rating }: { rating: number }) => {
-  const maxRating = 5; // Adjust this for your maximum rating
+export const StarRating = (props: IRatingStarProps) => {
+  const {
+    value = 0,
+    count = 5,
+    size = 14,
+    isEdit = false,
+    isHalf = false,
+    valueShow = false,
+    emptyIcon = <BsStar />,
+    halfIcon = <BsStarHalf />,
+    filledIcon = <BsStarFill />,
+    activeColor = "#FED900",
+    activeColors = [],
+    inactiveColor = "#808080",
+    onChange,
+    style = {},
+    classNames = "",
+  } = props;
 
-  const renderStars = () => {
-    const stars = [];
-    for (let i = 1; i <= maxRating; i++) {
-      if (i <= rating) {
-        stars.push(<GoldStar key={i} />);
-      } else {
-        stars.push(<GrayStar key={i} />);
+  const initialColor = activeColors[Math.round(value) - 1]
+    ? activeColors[Math.round(value) - 1]
+    : activeColor;
+
+  const [currentValue, setCurrentValue] = useState<number>(value);
+  const [color, setColor] = useState<string>(initialColor);
+
+  const clickHandler = (nextValue: number, e: any) => {
+    if (!isEdit) return;
+    const value = nextValue;
+    if (isHalf) {
+      const xPos =
+        (e.pageX - e.currentTarget?.getBoundingClientRect()?.left) /
+        e.currentTarget?.offsetWidth;
+
+      if (xPos <= 0.5) {
+        nextValue -= 0.5;
       }
     }
-    return stars;
+
+    setCurrentValue(nextValue);
+
+    // color set
+    if (typeof onChange === "function") onChange(nextValue);
+    const color = activeColors[value - 1]
+      ? activeColors[value - 1]
+      : activeColor;
+    setColor(color);
   };
 
-  return <div className="flex">{renderStars()}</div>;
-};
+  return (
+    <>
+      <div
+        className={classNames}
+        style={{
+          ...style,
+          display: "flex",
+          alignItems: "center",
+          fontSize: typeof size === "number" ? `${size}px` : size,
+          gap: 3,
+        }}
+      >
+        {Array(count)
+          .fill(1)
+          .map((item, index) => {
+            const roundedValue = Math.round(currentValue * 2) / 2;
+            const currentValueFloor = Math.floor(roundedValue);
+            const isActive = currentValueFloor >= index + 1;
 
-export default StarRating;
+            // Check if the current value is a half value
+            const isHalfActive = roundedValue === index + 0.5;
+
+            // Determine the color and icon based on the current value and half value
+            const starColor = isHalfActive
+              ? color
+              : isActive
+              ? color
+              : inactiveColor;
+            const starIcon = isHalfActive
+              ? halfIcon
+              : isActive
+              ? filledIcon
+              : emptyIcon;
+
+            return (
+              <span
+                onClick={(e) => clickHandler(index + 1, e)}
+                key={index}
+                style={{
+                  color: starColor,
+                  cursor: isEdit ? "pointer" : "default",
+                }}
+              >
+                {starIcon}
+              </span>
+            );
+          })}
+        <span style={{ color: inactiveColor }}>
+          {!!currentValue && valueShow && currentValue.toFixed(1)}
+        </span>
+      </div>
+    </>
+  );
+};

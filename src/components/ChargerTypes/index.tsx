@@ -17,14 +17,42 @@ const chargersList = {
 // Define a type for the keys of chargersList
 export type ChargerType = keyof typeof chargersList;
 
-export const ChargerTypes = ({ types }: { types: ChargerType[] }) => {
+type ChargerTypesProps = {
+  types: ChargerType[];
+  size?: number;
+  selectedType?: ChargerType;
+  setSelectedType?: React.Dispatch<
+    React.SetStateAction<ChargerType | undefined>
+  >;
+};
+
+export const ChargerTypes = ({
+  types,
+  selectedType,
+  setSelectedType,
+  size = 50,
+}: ChargerTypesProps) => {
   const chargers = types.map((type) => {
     if (chargersList.hasOwnProperty(type as PropertyKey)) {
       return (
-        <div className="flex flex-col p-3 w-1/3 items-center" key={type}>
+        <div
+          className={`flex ${
+            selectedType && selectedType === type ? "bg-gray-300" : ""
+          } flex-col p-3 w-1/3 items-center cursor-pointer rounded-md `}
+          key={type}
+          onClick={() => {
+            // setSelectedTypes((prev) => {
+            //   if (prev.includes(type)) {
+            //     return prev.filter((item) => item !== type);
+            //   }
+            //   return [...prev, type];
+            // });
+            setSelectedType && setSelectedType(type);
+          }}
+        >
           <div className="text-sm">{type}</div>
-          <div className="text-sm">
-            <img src={chargersList[type]} alt="" />
+          <div className="text-sm ">
+            <img src={chargersList[type]} width={size} alt="" />
           </div>
         </div>
       );

@@ -1,4 +1,4 @@
-import StarRating from "../StarRating";
+import { StarRating } from "@components/StarRating";
 
 interface UserCheckInProps {
   userName: string;
@@ -23,7 +23,7 @@ export const UserCheckIn = ({
         <div className="text-sm">{userCar}</div>
         <div className="text-sm">{time}</div>
         <div className="text-sm">
-          <StarRating rating={3} />
+          <StarRating value={stars} />
         </div>
       </div>
     </div>

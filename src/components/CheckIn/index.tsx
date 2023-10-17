@@ -1,7 +1,7 @@
 import { Vehicle } from "@apptypes/vehicle";
 import { ChargerType, ChargerTypes } from "@components/ChargerTypes";
 import { PinProps } from "@components/PinPopup";
-import StarRating from "@components/StarRating";
+import { StarRating } from "@components/StarRating";
 import { ToggleSwitcher } from "@components/ToggleSwitcher";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
@@ -15,25 +15,22 @@ interface CheckInProps {
 export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
   const supabase = createClientComponentClient();
   const { register, handleSubmit } = useForm();
-
-  const handleFormSubmit = () => {
-    handleSubmit((data) => {
-      console.log("data===>>>>", data);
-
-      // const { error } = await supabase
-      //   .from("checkins")
-      //   .insert({ comments: comment });
-    });
-  };
+  const [starRating, setStarRating] = useState(0);
+  const [selectedType, setSelectedType] = useState<ChargerType | undefined>();
 
   return (
     <form
-      onSubmit={handleSubmit((data) => {
+      onSubmit={handleSubmit(async (data) => {
         console.log("data===>>>>", data);
+        const dbData = {
+          ...data,
+          overall_rating: starRating,
+          plug_type: selectedType,
+        };
+        console.log("dbData", dbData);
 
-        // const { error } = await supabase
-        //   .from("checkins")
-        //   .insert({ comments: comment });
+        const { error } = await supabase.from("checkins").insert({ ...dbData });
+        console.log("error", error);
       })}
     >
       <div
@@ -41,94 +38,79 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
     tall:overflow-visible tall:max-h-screen "
       >
         <div className="flex flex-row justify-between items-center">
-          <div className="text-xl">Vehicle Type</div>
+          <select
+            {...register("vehicle_id")}
+            className="w-full p-2 bg-gray-300 rounded-2xl border-none"
+          >
+            <option value="">Vehicle</option>
+            {vehicles.map((vehicle) => (
+              <option key={vehicle.id} value={vehicle.id}>
+                {vehicle.vehicle}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex flex-row justify-between items-center">
+          <div className="text-sm font-bold">Overall rating</div>
           <div className="text-sm">
-            <select
-              {...register("vehicle_id")}
-              className="w-32 p-2 bg-gray-300 rounded-2xl border-none"
-            >
-              <option value="">Select</option>
-              {vehicles.map((vehicle) => (
-                <option key={vehicle.id} value={vehicle.id}>
-                  {vehicle.vehicle}
-                </option>
-              ))}
-            </select>
+            <StarRating
+              onChange={(val) => {
+                console.log("rating changed", val);
+                setStarRating(val);
+              }}
+              isEdit={true}
+            />
           </div>
         </div>
         <div className="flex flex-row justify-between items-center">
-          <div className="text-xl">Overall rating</div>
+          <div className="text-sm font-bold">Able to charge</div>
           <div className="text-sm">
-            <StarRating rating={3} />
-          </div>
-        </div>
-        <div className="flex flex-row justify-between items-center">
-          <div className="text-sm">Charging speed</div>
-          <div className="text-sm">
-            <StarRating rating={4} />
-          </div>
-        </div>
-        <div className="flex flex-row justify-between items-center">
-          <div className="text-sm">Reliability</div>
-          <div className="text-sm">
-            <StarRating rating={3} />
+            <ToggleSwitcher register={register("charged")} />
           </div>
         </div>
 
         <div className="flex flex-row justify-between items-center">
-          <div className="text-sm">What was your maximum charge rate (kW)?</div>
+          <div className="text-sm font-bold">Max charge rate</div>
           <div className="text-sm">
             <input
               type="text"
               className="w-16  p-2 bg-gray-300 rounded-2xl border-none"
               placeholder="KWs"
-              {...register("energy_consumed")}
+              {...register("max_charge_rate")}
             />
           </div>
         </div>
         <div className="flex flex-row justify-between items-center">
-          <div className="text-sm">How many chargers were working?</div>
+          <div className="text-sm font-bold">Number of working plugs</div>
           <div className="text-sm">
             <input
               type="text"
               className="w-16  p-2 bg-gray-300 rounded-2xl border-none"
               placeholder="num"
-            />
-          </div>
-        </div>
-        <div className="flex flex-row justify-between items-center">
-          <div className="text-sm">Charging time</div>
-          <div className="text-sm">
-            <input
-              type="text"
-              className="w-16  p-2 bg-gray-300 rounded-2xl border-none"
-              placeholder="mins"
-              {...register("charging_session_duration")}
+              {...register("working_chargers")}
             />
           </div>
         </div>
         <div className="flex flex-col ">
-          <div className="text-xl">Plug type</div>
+          <div className="text-sm font-bold">Plug type</div>
           <div className="flex flex-row">
-            <ChargerTypes types={pin.ev_connector_types as ChargerType[]} />
+            <ChargerTypes
+              size={30}
+              selectedType={selectedType}
+              types={pin.ev_connector_types as ChargerType[]}
+              setSelectedType={setSelectedType}
+            />
           </div>
         </div>
+
         <div className="flex flex-row justify-between items-center">
-          <div className="text-sm">Were you able to charge your vehicle?</div>
+          <div className="text-sm font-bold">Wait in line to charge?</div>
           <div className="text-sm">
-            <ToggleSwitcher />
-          </div>
-        </div>
-        <div className="flex flex-row justify-between items-center">
-          <div className="text-sm">
-            Did you wait in line ( 5 mins) to charge?
-          </div>
-          <div className="text-sm">
-            <ToggleSwitcher />
+            <ToggleSwitcher register={register("wait_in_line")} />
           </div>
         </div>
         <div className="flex flex-col ">
-          <div className="text-xl">Comments </div>
+          <div className="text-sm font-bold">Comments </div>
           <div className="">
             <textarea
               {...register("comments")}
@@ -138,7 +120,7 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
         </div>
         <div className="flex justify-center gap-1">
           <div className="">
-            <input type="checkbox" {...register("anonymous_flag")} />
+            <input type="checkbox" {...register("anonymous")} />
           </div>
           <div className="text-xs">I wish to remain anonymous</div>
         </div>
