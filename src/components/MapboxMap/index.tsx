@@ -14,6 +14,7 @@ import {
   unclusteredPointLayer,
   chargingPlugsCount,
   chargingPin,
+  cirlces,
 } from "@components/MapLayers";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Directions } from "@components/Directions";
@@ -104,6 +105,21 @@ export const MapboxMap = () => {
     },
     [pins]
   );
+  const getStationsInView = async (
+    min_lat: number,
+    min_long: number,
+    max_lat: number,
+    max_long: number
+  ) => {
+    const { data, error } = await supabase.rpc("stations_in_view", {
+      min_lat,
+      min_long,
+      max_lat,
+      max_long,
+    });
+    console.log("data", data, error);
+    return data;
+  };
 
   const onMouseEnter = useCallback(() => setCursor("pointer"), []);
   const onMouseLeave = useCallback(() => setCursor("auto"), []);
@@ -130,6 +146,7 @@ export const MapboxMap = () => {
     features: geojson,
   } as GeoJSON.FeatureCollection<GeoJSON.Geometry>;
 
+  console.log("featureCollection", featureCollection);
   return (
     <div className="flex flex-grow">
       <Map
@@ -147,6 +164,21 @@ export const MapboxMap = () => {
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        onMoveEnd={async (e) => {
+          const bbox = mapRef.current?.getMap().getBounds().toArray().flat();
+          // Get all places in a box of coordinates
+          if (bbox) {
+            const data = await getStationsInView(
+              bbox[1],
+              bbox[0],
+              bbox[3],
+              bbox[2]
+            );
+            console.log("data", data);
+
+            updatePins(data);
+          }
+        }}
       >
         <Geocoder
           position={"top-left"}
@@ -197,6 +229,7 @@ export const MapboxMap = () => {
           {/* <Layer {...clusterLayer} />
           <Layer {...clusterCountLayer} /> */}
           {/* <Layer {...unclusteredPointLayer} /> */}
+          <Layer {...cirlces} />
           <Layer {...chargingPin} />
           <Layer {...chargingPlugsCount} />
         </Source>

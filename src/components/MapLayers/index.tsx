@@ -55,6 +55,19 @@ export const chargingPin: LayerProps = {
   },
 };
 
+export const cirlces: LayerProps = {
+  id: "circles",
+  type: "circle",
+  source: "earthquakes",
+  layout: {},
+  paint: {
+    "circle-color": "#FF0000",
+    "circle-radius": 10,
+    "circle-stroke-width": 2,
+    "circle-stroke-color": "#fff",
+  },
+};
+
 export const chargingPlugsCount: LayerProps = {
   id: "cluster-count",
   type: "symbol",

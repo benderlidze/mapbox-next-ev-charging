@@ -22,13 +22,23 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
     <form
       onSubmit={handleSubmit(async (data) => {
         console.log("data===>>>>", data);
+        console.log("selectedType", selectedType);
+
+        let { data: ev_connectors } = await supabase
+          .from("ev_connectors")
+          .select("id")
+          .eq("ev_connector_type", selectedType);
+
+        console.log("results", ev_connectors);
+        const connectorId = ev_connectors ? ev_connectors[0].id : null;
+
         const dbData = {
           ...data,
           overall_rating: starRating,
-          plug_type: selectedType,
+          plug_type: connectorId,
         };
-        console.log("dbData", dbData);
 
+        console.log("dbData", dbData);
         const { error } = await supabase.from("checkins").insert({ ...dbData });
         console.log("error", error);
       })}
