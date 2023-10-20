@@ -32,6 +32,8 @@ export const ChargerTypes = ({
   setSelectedType,
   size = 50,
 }: ChargerTypesProps) => {
+  console.log("types", types);
+
   const chargers = types.map((type) => {
     if (chargersList.hasOwnProperty(type as PropertyKey)) {
       return (

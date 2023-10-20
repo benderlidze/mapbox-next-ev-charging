@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { PinProps } from "@components/PinPopup";
+import { DBPinPopup, PinProps } from "@components/PinPopup";
 import { ChargerType, ChargerTypes } from "@components/ChargerTypes";
 import { UserCheckIn } from "@components/UserCheckIn";
 import { SvgButton } from "@components/SvgButton";
@@ -13,7 +13,7 @@ interface TabContentProps {
   children: React.ReactNode;
 }
 
-export const Tabs = ({ pin }: { pin: PinProps }) => {
+export const Tabs = ({ pinData }: { pinData: DBPinPopup }) => {
   const [selected, setSelected] = useState<string>("Info");
 
   const TabItem = (name: string) => {
@@ -48,7 +48,9 @@ export const Tabs = ({ pin }: { pin: PinProps }) => {
 
       <TabContentWrapper tabName="Chargers">
         <div className="flex flex-row mt-4 border border-gray-00 rounded-lg bg-slate-100">
-          <ChargerTypes types={pin.ev_connector_types as ChargerType[]} />
+          <ChargerTypes
+            types={pinData["EV Connector Types"].split(" ") as ChargerType[]}
+          />
         </div>
       </TabContentWrapper>
 
@@ -61,7 +63,7 @@ export const Tabs = ({ pin }: { pin: PinProps }) => {
 
           <div className="flex flex-row justify-between p-3">
             <div className="text-sm">Cost</div>
-            <div className="text-sm">{pin.ev_pricing}</div>
+            <div className="text-sm">{pinData["EV Pricing"]}</div>
           </div>
         </div>
 
@@ -72,7 +74,7 @@ export const Tabs = ({ pin }: { pin: PinProps }) => {
           </div>
 
           <div className="flex flex-row justify-between p-3">
-            <div className="text-sm">{pin.access_days_time}</div>
+            <div className="text-sm">{pinData["Access Days Time"]}</div>
             <div className="text-sm"></div>
           </div>
         </div>

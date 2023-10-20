@@ -3,12 +3,14 @@ import { useEffect, useState } from "react";
 import { FilterItems } from "@components/FilterItems";
 import { useFiltersStore } from "@store/filters";
 import { usePinsStore } from "@store/pins";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export const FiltersButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const updatePins = usePinsStore((state) => state.updatePins);
   const { filters, updateFilter } = useFiltersStore();
+  const supabase = createClientComponentClient();
 
   const handleButtonCLick = () => {
     setIsOpen(!isOpen);
@@ -48,24 +50,19 @@ export const FiltersButton = () => {
 
   useEffect(() => {
     //initialize
-    fetch("/api/load-pins/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify([`ev_connector_type=all`, `state=CA`]),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("data", data);
-        console.log("data.fuel_stations", data.fuel_stations);
-        updatePins(data.data.fuel_stations);
-        setIsLoading(false);
-        setIsOpen(false);
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
+
+    const fetchStations = async () => {
+      const { data } = await supabase
+        .from("ev_stations_gis")
+        .select("*")
+        .eq("State", "CA");
+
+      console.log("data", data);
+      data && updatePins(data as any);
+      setIsLoading(false);
+      setIsOpen(false);
+    };
+    fetchStations();
   }, []);
 
   return (

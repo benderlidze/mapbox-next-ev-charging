@@ -1,17 +1,13 @@
 "use client";
 import { usePinsStore } from "@store/pins";
-import { useDirectionsStore } from "@store/directions";
 import * as React from "react";
 import Map, { Source, Layer, MapRef, MapLayerMouseEvent } from "react-map-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { PinProps, PinPopup } from "@components/PinPopup";
+import { PinProps, PinPopup, DBPinPopup } from "@components/PinPopup";
 import { Geocoder } from "@components/GeocoderControl";
 import {
-  clusterLayer,
-  clusterCountLayer,
-  unclusteredPointLayer,
   chargingPlugsCount,
   chargingPin,
   cirlces,
@@ -32,7 +28,6 @@ export const MapboxMap = () => {
 
   useEffect(() => {
     console.log("MapboxMap mounted");
-
     const getEVCarModels = async () => {
       const { data, error } = await supabase.from("vehicles").select();
       console.log("supabase", data);
@@ -44,26 +39,6 @@ export const MapboxMap = () => {
       console.log("MapboxMap unmounted");
     };
   }, []);
-
-  // const evPins = pins
-  //   ? pins.map((pin: PinProps, index) => {
-  //       const count =
-  //         pin.ev_dc_fast_num + pin.ev_level1_evse_num + pin.ev_level2_evse_num;
-  //       return (
-  //         <Marker
-  //           key={`marker-${index}`}
-  //           longitude={pin.longitude}
-  //           latitude={pin.latitude}
-  //           onClick={() => {
-  //             console.log("pin", pin);
-  //             setSelectedPin(pin);
-  //           }}
-  //         >
-  //           <Pin count={count} size={30} />
-  //         </Marker>
-  //       );
-  //     })
-  //   : [];
 
   const mapRef = useRef<MapRef | null>(null);
   const mapRefCallback = useCallback((ref: MapRef | null) => {
@@ -95,11 +70,8 @@ export const MapboxMap = () => {
       const feature = event.features && event.features[0];
 
       if (pins) {
-        console.log("feature", feature);
-        console.log("pins", pins);
         const id = feature && feature.properties && feature.properties.id;
         const pin = pins.find((pin: PinProps) => pin.id === id);
-        console.log("pin", pin);
         setSelectedPin(pin);
       }
     },
@@ -117,21 +89,20 @@ export const MapboxMap = () => {
       max_lat,
       max_long,
     });
-    console.log("data", data, error);
+    console.log("data--->", data, error);
     return data;
   };
 
   const onMouseEnter = useCallback(() => setCursor("pointer"), []);
   const onMouseLeave = useCallback(() => setCursor("auto"), []);
 
+  console.log("pins!!!!!!!!!", pins);
   const geojson = pins
-    ? pins.map((pin: PinProps, index) => {
-        const e = +pin.ev_dc_fast_num;
-        const l1 = +pin.ev_level1_evse_num;
-        const l2 = +pin.ev_level2_evse_num;
+    ? pins.map((pin: DBPinPopup, index) => {
+        const e = +pin["EV DC Fast Count"];
+        const l1 = +pin["EV Level1 EVSE Num"];
+        const l2 = +pin["EV Level2 EVSE Num"];
         const count = e + l1 + l2;
-
-        console.log("count", count);
         return {
           type: "Feature",
           properties: {
@@ -140,7 +111,7 @@ export const MapboxMap = () => {
           },
           geometry: {
             type: "Point",
-            coordinates: [pin.longitude, pin.latitude],
+            coordinates: [pin["Longitude"], pin["Latitude"]],
           },
         };
       })
@@ -210,8 +181,6 @@ export const MapboxMap = () => {
             }
           }}
         />
-
-        {/* {evPins} */}
 
         {selectedPin && (
           <PinPopup
