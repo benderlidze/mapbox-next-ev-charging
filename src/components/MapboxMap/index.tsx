@@ -126,13 +126,17 @@ export const MapboxMap = () => {
 
   const geojson = pins
     ? pins.map((pin: PinProps, index) => {
-        const count =
-          pin.ev_dc_fast_num + pin.ev_level1_evse_num + pin.ev_level2_evse_num;
+        const e = +pin.ev_dc_fast_num;
+        const l1 = +pin.ev_level1_evse_num;
+        const l2 = +pin.ev_level2_evse_num;
+        const count = e + l1 + l2;
+
+        console.log("count", count);
         return {
           type: "Feature",
           properties: {
             ...pin,
-            charging_plugs_count: count,
+            charging_plugs_count: count > 0 ? count : "?",
           },
           geometry: {
             type: "Point",
@@ -175,7 +179,6 @@ export const MapboxMap = () => {
               bbox[2]
             );
             console.log("data", data);
-
             updatePins(data);
           }
         }}
