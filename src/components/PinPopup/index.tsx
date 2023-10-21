@@ -253,3 +253,4 @@ export const PinPopup = React.memo(
     );
   }
 );
+PinPopup.displayName = "PinPopup";
