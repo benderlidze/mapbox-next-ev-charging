@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { DBPinPopup, PinProps } from "@components/PinPopup";
-import { ChargerType, ChargerTypes } from "@components/ChargerTypes";
+import { DBPinPopup } from "@components/PinPopup";
+import { ChargerTypes } from "@components/ChargerTypes";
 import { UserCheckIn } from "@components/UserCheckIn";
 import { SvgButton } from "@components/SvgButton";
 import { UserReview } from "@components/UserReview";
@@ -48,9 +48,7 @@ export const Tabs = ({ pinData }: { pinData: DBPinPopup }) => {
 
       <TabContentWrapper tabName="Chargers">
         <div className="flex flex-row mt-4 border border-gray-00 rounded-lg bg-slate-100">
-          <ChargerTypes
-            types={pinData["EV Connector Types"].split(" ") as ChargerType[]}
-          />
+          <ChargerTypes types={pinData["EV Connector Types"]} />
         </div>
       </TabContentWrapper>
 

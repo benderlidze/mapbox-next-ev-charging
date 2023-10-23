@@ -34,33 +34,35 @@ export const ChargerTypes = ({
 }: ChargerTypesProps) => {
   console.log("types", types);
 
-  const chargers = types.map((type) => {
-    if (chargersList.hasOwnProperty(type as PropertyKey)) {
-      return (
-        <div
-          className={`flex ${
-            selectedType && selectedType === type ? "bg-gray-300" : ""
-          } flex-col p-3 w-1/3 items-center cursor-pointer rounded-md `}
-          key={type}
-          onClick={() => {
-            // setSelectedTypes((prev) => {
-            //   if (prev.includes(type)) {
-            //     return prev.filter((item) => item !== type);
-            //   }
-            //   return [...prev, type];
-            // });
-            setSelectedType && setSelectedType(type);
-          }}
-        >
-          <div className="text-sm">{type}</div>
-          <div className="text-sm ">
-            <img src={chargersList[type]} width={size} alt="" />
+  const chargers =
+    Array.isArray(types) &&
+    types.map((type) => {
+      if (chargersList.hasOwnProperty(type as PropertyKey)) {
+        return (
+          <div
+            className={`flex ${
+              selectedType && selectedType === type ? "bg-gray-300" : ""
+            } flex-col p-3 w-1/3 items-center cursor-pointer rounded-md `}
+            key={type}
+            onClick={() => {
+              // setSelectedTypes((prev) => {
+              //   if (prev.includes(type)) {
+              //     return prev.filter((item) => item !== type);
+              //   }
+              //   return [...prev, type];
+              // });
+              setSelectedType && setSelectedType(type);
+            }}
+          >
+            <div className="text-sm">{type}</div>
+            <div className="text-sm ">
+              <img src={chargersList[type]} width={size} alt="" />
+            </div>
           </div>
-        </div>
-      );
-    }
-    return null;
-  });
+        );
+      }
+      return null;
+    });
 
   return <>{chargers}</>;
 };

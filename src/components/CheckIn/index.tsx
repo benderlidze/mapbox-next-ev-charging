@@ -1,6 +1,6 @@
 import { Vehicle } from "@apptypes/vehicle";
 import { ChargerType, ChargerTypes } from "@components/ChargerTypes";
-import { PinProps } from "@components/PinPopup";
+import { DBPinPopup } from "@components/PinPopup";
 import { StarRating } from "@components/StarRating";
 import { ToggleSwitcher } from "@components/ToggleSwitcher";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -8,7 +8,7 @@ import { useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 interface CheckInProps {
-  pin: PinProps;
+  pin: DBPinPopup;
   vehicles: Vehicle[];
 }
 
@@ -107,7 +107,7 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
             <ChargerTypes
               size={30}
               selectedType={selectedType}
-              types={pin.ev_connector_types as ChargerType[]}
+              types={pin["EV Connector Types"] as ChargerType[]}
               setSelectedType={setSelectedType}
             />
           </div>

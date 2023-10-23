@@ -1,32 +1,32 @@
 import { useEffect, useState } from "react";
-import { Tabs } from "../Tabs";
+import { Tabs } from "@components/Tabs";
 import { useDirectionsStore } from "@store/directions";
-import { CheckIn } from "../CheckIn";
+import { CheckIn } from "@components/CheckIn";
 import { Vehicle } from "@apptypes/vehicle";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import React from "react";
-export interface PinProps {
-  id: number;
-  latitude: number;
-  longitude: number;
-  city: string;
-  zip: string;
-  ev_connector_types: string[];
-  station_name: string;
-  street_address: string;
-  ev_network: string;
-  ev_network_web: string;
-  ev_pricing: string;
-  access_days_time: string;
-
-  ev_dc_fast_num: number;
-  ev_level1_evse_num: number;
-  ev_level2_evse_num: number;
-}
+import { ChargerType } from "@components/ChargerTypes";
+// export interface PinProps_deprecated {
+//   id: number;
+//   latitude: number;
+//   longitude: number;
+//   city: string;
+//   zip: string;
+//   ev_connector_types: string[];
+//   station_name: string;
+//   street_address: string;
+//   ev_network: string;
+//   ev_network_web: string;
+//   ev_pricing: string;
+//   access_days_time: string;
+//   ev_dc_fast_num: number;
+//   ev_level1_evse_num: number;
+//   ev_level2_evse_num: number;
+// }
 
 export type DBPinPopup = {
   "EV DC Fast Count": string;
-  "EV Connector Types": string;
+  "EV Connector Types": ChargerType[];
   "EV Network": string;
   "EV Pricing": string;
   "Access Days Time": string;
@@ -44,8 +44,8 @@ export type DBPinPopup = {
 };
 
 interface PinPopupProps {
-  pin: PinProps;
-  setSelectedPin: (pin: PinProps | undefined) => void;
+  pin: DBPinPopup;
+  setSelectedPin: (pin: DBPinPopup | undefined) => void;
   vehicles: Vehicle[];
 }
 
@@ -57,20 +57,28 @@ export const PinPopup = React.memo(
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const supabase = createClientComponentClient();
     console.log("RENDER pinPopup");
+
     useEffect(() => {
       setIsLoading(true);
-      const pinId = pin.id;
+      const pinId = pin.ID;
       const getPinData = async () => {
         const { data, error } = await supabase
           .from("ev_stations_gis")
           .select()
           .eq("ID", pinId);
-        data && data[0] && setPinData(data[0]);
+        data &&
+          data[0] &&
+          setPinData({
+            ...data[0],
+            "EV Connector Types": data[0]["EV Connector Types"].split(
+              " "
+            ) as ChargerType[],
+          });
         setIsLoading(false);
         console.log("data", data, error);
       };
       getPinData();
-    }, [pin.id]);
+    }, [pin.ID]);
 
     const handleCheckInClick = () => {
       setCheckInVisible(!checkInVisible);
@@ -80,7 +88,7 @@ export const PinPopup = React.memo(
       //get uuser position
       navigator.geolocation.getCurrentPosition((position) => {
         const userPosition = `${position.coords.longitude},${position.coords.latitude}`;
-        const destination = `${pin.longitude},${pin.latitude}`;
+        const destination = `${pin.Longitude},${pin.Latitude}`;
 
         //&overview=full
         fetch(
@@ -245,7 +253,7 @@ export const PinPopup = React.memo(
                 Check in
               </div>
             </div>
-            {checkInVisible && <CheckIn vehicles={vehicles} pin={pin} />}
+            {checkInVisible && <CheckIn vehicles={vehicles} pin={pinData} />}
             {!checkInVisible && <Tabs pinData={pinData} />}
           </div>
         </div>

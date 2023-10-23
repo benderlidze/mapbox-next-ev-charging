@@ -5,7 +5,7 @@ import Map, { Source, Layer, MapRef, MapLayerMouseEvent } from "react-map-gl";
 
 import "mapbox-gl/dist/mapbox-gl.css";
 
-import { PinProps, PinPopup, DBPinPopup } from "@components/PinPopup";
+import { PinPopup, DBPinPopup } from "@components/PinPopup";
 import { Geocoder } from "@components/GeocoderControl";
 import {
   chargingPlugsCount,
@@ -16,13 +16,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Directions } from "@components/Directions";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Vehicle } from "@apptypes/vehicle";
+import { ChargerType } from "@components/ChargerTypes";
 
 export const MapboxMap = () => {
   const { pins, updatePins } = usePinsStore();
-  // const updatePins = usePinsStore((state) => state.updatePins);
   const supabase = createClientComponentClient();
 
-  const [selectedPin, setSelectedPin] = useState<PinProps>();
+  const [selectedPin, setSelectedPin] = useState<DBPinPopup>();
   const [cursor, setCursor] = useState<string>("auto");
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
 
@@ -30,11 +30,10 @@ export const MapboxMap = () => {
     console.log("MapboxMap mounted");
     const getEVCarModels = async () => {
       const { data, error } = await supabase.from("vehicles").select();
-      console.log("supabase", data);
+      console.log(" supabase.from(vehicles)", data);
       data && setVehicles(data);
     };
     getEVCarModels();
-
     return () => {
       console.log("MapboxMap unmounted");
     };
@@ -68,11 +67,13 @@ export const MapboxMap = () => {
   const onClick = useCallback(
     (event: MapLayerMouseEvent) => {
       const feature = event.features && event.features[0];
-
       if (pins) {
-        const id = feature && feature.properties && feature.properties.id;
-        const pin = pins.find((pin: PinProps) => pin.id === id);
-        setSelectedPin(pin);
+        const id = feature && feature.properties && feature.properties.ID;
+
+        const pin = pins.find((p: DBPinPopup) => p.ID === id);
+        if (pin) {
+          setSelectedPin(pin);
+        }
       }
     },
     [pins]
@@ -96,7 +97,6 @@ export const MapboxMap = () => {
   const onMouseEnter = useCallback(() => setCursor("pointer"), []);
   const onMouseLeave = useCallback(() => setCursor("auto"), []);
 
-  console.log("pins!!!!!!!!!", pins);
   const geojson = pins
     ? pins.map((pin: DBPinPopup, index) => {
         const e = +pin["EV DC Fast Count"];
