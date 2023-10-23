@@ -4,21 +4,20 @@ import { FilterItems } from "@components/FilterItems";
 import { useFiltersStore } from "@store/filters";
 import { usePinsStore } from "@store/pins";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { DBPinPopup } from "../PinPopup";
 
 export const FiltersButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const updatePins = usePinsStore((state) => state.updatePins);
   const { filters, updateFilter } = useFiltersStore();
-  const supabase = createClientComponentClient();
 
   const handleButtonCLick = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleFilters = () => {
+  const handleFilters = async () => {
     console.log("filters", filters);
-    setIsLoading(true);
+    // setIsLoading(true);
     const filtersData = Array.from(filters)
       .filter((d) => d[1].length > 0)
       .map((d) => {
@@ -27,43 +26,27 @@ export const FiltersButton = () => {
           : `${d[0]}=${d[1].join(",")}`;
       });
     console.log("filtersData", filtersData);
-    fetch("/api/load-pins/", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(filtersData),
-    })
-      .then((res) => res.json())
-      .then((results) => {
-        console.log("results", results);
-        console.log("URL===========>>>>", results.url);
 
-        updatePins(results.data.fuel_stations);
-        setIsLoading(false);
-        setIsOpen(false);
-      })
-      .catch((err) => {
-        console.log("err", err);
-      });
+    // fetch("/api/load-pins/", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(filtersData),
+    // })
+    //   .then((res) => res.json())
+    //   .then((results) => {
+    //     console.log("results", results);
+    //     console.log("URL===========>>>>", results.url);
+
+    //     updatePins(results.data.fuel_stations);
+    //     setIsLoading(false);
+    //     setIsOpen(false);
+    //   })
+    //   .catch((err) => {
+    //     console.log("err", err);
+    //   });
   };
-
-  useEffect(() => {
-    //initialize
-
-    const fetchStations = async () => {
-      const { data } = await supabase
-        .from("ev_stations_gis")
-        .select("*")
-        .eq("State", "CA");
-
-      console.log("data", data);
-      data && updatePins(data as any);
-      setIsLoading(false);
-      setIsOpen(false);
-    };
-    fetchStations();
-  }, []);
 
   return (
     <>
@@ -86,9 +69,9 @@ export const FiltersButton = () => {
             parameter="ev_charging_level"
             list={[
               { displayName: "All", value: "all" },
-              { displayName: "Level 1", value: "1" },
-              { displayName: "Level 2", value: "2" },
-              { displayName: "DC Fast", value: "dc_fast" },
+              { displayName: "Level 1", value: "EV Level1 EVSE Num" },
+              { displayName: "Level 2", value: "EV Level2 EVSE Num" },
+              { displayName: "DC Fast", value: "EV DC Fast Count" },
             ]}
             selectedFilters={filters}
             updateFilter={updateFilter}

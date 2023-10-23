@@ -28,7 +28,7 @@ export const useFiltersStore = create<FiltersState & Action>((set) => ({
   //   }),
   updateFilter: (filterIndex, filterValue) =>
     set((state) => {
-      const filters = state.filters;
+      const filters = new Map(state.filters);
       console.log("filters", filters);
       if (filters.get(filterIndex)) {
         const selectedArray = filters.get(filterIndex);

@@ -70,9 +70,10 @@ export const PinPopup = React.memo(
           data[0] &&
           setPinData({
             ...data[0],
-            "EV Connector Types": data[0]["EV Connector Types"].split(
-              " "
-            ) as ChargerType[],
+            "EV Connector Types":
+              data[0]["EV Connector Types"] !== null
+                ? (data[0]["EV Connector Types"].split(" ") as ChargerType[])
+                : [],
           });
         setIsLoading(false);
         console.log("data", data, error);

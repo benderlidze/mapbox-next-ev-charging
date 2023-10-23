@@ -16,9 +16,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Directions } from "@components/Directions";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Vehicle } from "@apptypes/vehicle";
-import { ChargerType } from "@components/ChargerTypes";
+import { useFiltersStore } from "@store/filters";
 
 export const MapboxMap = () => {
+  const { filters } = useFiltersStore();
   const { pins, updatePins } = usePinsStore();
   const supabase = createClientComponentClient();
 
@@ -34,6 +35,7 @@ export const MapboxMap = () => {
       data && setVehicles(data);
     };
     getEVCarModels();
+
     return () => {
       console.log("MapboxMap unmounted");
     };
@@ -61,8 +63,89 @@ export const MapboxMap = () => {
         console.log(id);
         loadImage();
       });
+
+      //-------------------------------
+      // initialize MAP with pins
+      //-------------------------------
+      const fetchStations = async () => {
+        const bbox = mapRef.current?.getMap().getBounds().toArray().flat();
+        if (bbox) {
+          const data = await getStationsInView(
+            bbox[1],
+            bbox[0],
+            bbox[3],
+            bbox[2]
+          );
+          console.log("data", data);
+          updatePins(data);
+        }
+      };
+      fetchStations();
     }
   }, []);
+
+  useEffect(() => {
+    //update pins on filters change
+    console.log("---====UPDATING FILTERS====----");
+    const fetchStations = async () => {
+      const bbox = mapRef.current?.getMap().getBounds().toArray().flat();
+      if (bbox) {
+        const data = await getStationsInView(
+          bbox[1],
+          bbox[0],
+          bbox[3],
+          bbox[2]
+        );
+        console.log("data", data);
+        console.log("filters", filters);
+
+        const filteredPins = applyFiltersToResults(data);
+        console.log("filteredPins", filteredPins);
+        updatePins(filteredPins as []);
+      }
+    };
+    fetchStations();
+  }, [filters]);
+
+  function applyFiltersToResults(data: DBPinPopup[]) {
+    const filteredPins = data
+      .filter((d: any) => {
+        const ev_connector_type = filters.get("ev_connector_type");
+        const types =
+          d["EV Connector Types"] !== null
+            ? d["EV Connector Types"].split(" ")
+            : [];
+        if (
+          ev_connector_type &&
+          ev_connector_type.length > 0 &&
+          types.length > 0
+        ) {
+          return containsAny(
+            ev_connector_type,
+            d["EV Connector Types"].split(" ")
+          );
+        }
+        return true;
+      })
+      .filter((d: any) => {
+        //ev_charging_level
+        const ev_charging_level = filters
+          .get("ev_charging_level")
+          ?.filter((d) => d !== "all");
+
+        if (ev_charging_level && ev_charging_level.length > 0) {
+          return ev_charging_level.some((level) => {
+            return d[level] !== null;
+          });
+        } else return true;
+      });
+
+    return filteredPins;
+  }
+
+  function containsAny(arr1: string[], arr2: string[]) {
+    return arr1.some((element) => arr2.includes(element));
+  }
 
   const onClick = useCallback(
     (event: MapLayerMouseEvent) => {
@@ -82,7 +165,8 @@ export const MapboxMap = () => {
     min_lat: number,
     min_long: number,
     max_lat: number,
-    max_long: number
+    max_long: number,
+    filters?: string[]
   ) => {
     const { data, error } = await supabase.rpc("stations_in_view", {
       min_lat,
@@ -90,6 +174,7 @@ export const MapboxMap = () => {
       max_lat,
       max_long,
     });
+
     console.log("data--->", data, error);
     return data;
   };
@@ -150,7 +235,9 @@ export const MapboxMap = () => {
               bbox[2]
             );
             console.log("data", data);
-            updatePins(data);
+
+            const filteredPins = applyFiltersToResults(data);
+            updatePins(filteredPins as []);
           }
         }}
       >
