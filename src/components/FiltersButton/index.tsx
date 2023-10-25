@@ -57,7 +57,7 @@ export const FiltersButton = () => {
         Filters
       </div>
       {isOpen && (
-        <div className="w-10/12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-90 bg-white border rounded-xl shadow-md p-4">
+        <div className="w-10/12 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10  bg-white border rounded-xl shadow-md p-4">
           <div
             className="absolute top-0 right-0 p-2 cursor-pointer"
             onClick={() => setIsOpen(false)}
@@ -170,7 +170,7 @@ export const FiltersButton = () => {
             updateFilter={updateFilter}
           />
           <FilterItems
-            title="Status"
+            title="Price"
             parameter="ev_pricing"
             list={[
               { displayName: "Free", value: "Free" },

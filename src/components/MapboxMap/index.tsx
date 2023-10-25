@@ -138,6 +138,37 @@ export const MapboxMap = () => {
             return d[level] !== null;
           });
         } else return true;
+      })
+      .filter((d: any) => {
+        //Charging network
+        const ev_network = filters
+          .get("ev_network")
+          ?.filter((d) => d !== "all");
+        if (ev_network && ev_network.length > 0) {
+          return ev_network.some((network) => {
+            return network.includes(d["EV Network"]);
+          });
+        } else return true;
+      })
+      .filter((d: any) => {
+        console.log("filters", filters);
+        //Pricing
+        const ev_pricing = filters.get("ev_pricing");
+        if (ev_pricing && ev_pricing.length > 0) {
+          return ev_pricing.some((price) => {
+            return price.includes(d["EV Pricing"]);
+          });
+        } else return true;
+      })
+      .filter((d: any) => {
+        console.log("filters", filters);
+        //status code
+        const status_code = filters.get("status_code");
+        if (status_code && status_code.length > 0) {
+          return status_code.some((code) => {
+            return code.includes(d["Status Code"]);
+          });
+        } else return true;
       });
 
     return filteredPins;
