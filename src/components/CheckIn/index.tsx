@@ -5,7 +5,7 @@ import { StarRating } from "@components/StarRating";
 import { ToggleSwitcher } from "@components/ToggleSwitcher";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 interface CheckInProps {
   pin: DBPinPopup;
@@ -17,6 +17,18 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
   const { register, handleSubmit } = useForm();
   const [starRating, setStarRating] = useState(0);
   const [selectedType, setSelectedType] = useState<ChargerType | undefined>();
+  const [success, setSuccess] = useState(false);
+
+  console.log("pin", pin);
+
+  if (success) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 p-4">
+        <div className="text-3xl font-bold">Thank you!</div>
+        <div className="text-lg flex justify-center">Your feedback has been submitted.</div>
+      </div>
+    );
+  }
 
   return (
     <form
@@ -36,11 +48,16 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
           ...data,
           overall_rating: starRating,
           plug_type: connectorId,
+          station_id: pin.ID,
         };
 
         console.log("dbData", dbData);
         const { error } = await supabase.from("checkins").insert({ ...dbData });
         console.log("error", error);
+
+        if (!error) {
+          setSuccess(true);
+        }
       })}
     >
       <div

@@ -56,7 +56,7 @@ export const PinPopup = React.memo(
     const [pinData, setPinData] = useState<DBPinPopup>();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const supabase = createClientComponentClient();
-    console.log("RENDER pinPopup");
+    console.log("RENDER pinPopup", vehicles);
 
     useEffect(() => {
       setIsLoading(true);
@@ -255,7 +255,7 @@ export const PinPopup = React.memo(
               </div>
             </div>
             {checkInVisible && <CheckIn vehicles={vehicles} pin={pinData} />}
-            {!checkInVisible && <Tabs pinData={pinData} />}
+            {!checkInVisible && <Tabs pinData={pinData} vehicles={vehicles} />}
           </div>
         </div>
       </div>

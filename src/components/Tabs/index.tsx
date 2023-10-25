@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { DBPinPopup } from "@components/PinPopup";
 import { ChargerTypes } from "@components/ChargerTypes";
-import { UserCheckIn } from "@components/UserCheckIn";
+
 import { SvgButton } from "@components/SvgButton";
 import { UserReview } from "@components/UserReview";
+
+import { CheckinsList } from "@components/CheckinsList";
+import { Vehicle } from "@apptypes/vehicle";
+import { Reviews } from "../Reviews";
 
 type TabName = "Info" | "Chargers" | "Check-in" | "Reviews";
 const tabsList: TabName[] = ["Info", "Chargers", "Check-in", "Reviews"];
@@ -13,9 +17,14 @@ interface TabContentProps {
   children: React.ReactNode;
 }
 
-export const Tabs = ({ pinData }: { pinData: DBPinPopup }) => {
+export const Tabs = ({
+  pinData,
+  vehicles,
+}: {
+  pinData: DBPinPopup;
+  vehicles: Vehicle[];
+}) => {
   const [selected, setSelected] = useState<string>("Info");
-
   const TabItem = (name: string) => {
     return (
       <div
@@ -79,58 +88,11 @@ export const Tabs = ({ pinData }: { pinData: DBPinPopup }) => {
       </TabContentWrapper>
 
       <TabContentWrapper tabName="Check-in">
-        <div>
-          <div className="flex flex-col gap-4 p-2 mt-4 border border-gray-00 rounded-lg bg-slate-100">
-            <div className="flex flex-row-reverse">
-              <SvgButton icon="/icons/filter.svg" onClick={() => {}} />
-            </div>
-            <UserCheckIn
-              userName="Alice"
-              userCar="Tesla Model 3"
-              time="2 hours ago"
-              stars={3}
-              comment="This is a comment"
-            />
-            <UserCheckIn
-              userName="Bob"
-              userCar="VW id 4"
-              time="2 hours ago"
-              stars={1}
-              comment="This is a comment"
-            />
-            <UserCheckIn
-              userName="Susan"
-              userCar="Mercedes EQS"
-              time="2 hours ago"
-              stars={4}
-              comment="This is a comment"
-            />
-          </div>
-        </div>
+        <CheckinsList pinData={pinData} vehicles={vehicles} />
       </TabContentWrapper>
 
       <TabContentWrapper tabName="Reviews">
-        <div>
-          <div className="flex flex-col gap-4 p-2 mt-4 border border-gray-00 rounded-lg bg-slate-100">
-            <div className="flex flex-row-reverse">
-              <SvgButton icon="/icons/filter.svg" onClick={() => {}} />
-            </div>
-            <UserReview
-              userName="Alice"
-              userCar="Tesla Model 3"
-              time="2 hours ago"
-              stars={4}
-              comment="Often occupied by car sharing company, and cable is not even charging. Seems like they just occupying space and shuffling between cars."
-            />
-            <UserReview
-              userName="John"
-              userCar="Tesla Model x"
-              time="2 hours ago"
-              stars={4}
-              comment="Often occupied by car sharing company, and cable is not even charging. Seems like they just occupying space and shuffling between cars."
-            />
-          </div>
-        </div>
+        <Reviews pinData={pinData} vehicles={vehicles} />
       </TabContentWrapper>
     </>
   );
