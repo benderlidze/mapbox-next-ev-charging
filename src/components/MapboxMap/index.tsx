@@ -151,7 +151,7 @@ export const MapboxMap = () => {
         } else return true;
       })
       .filter((d: any) => {
-        //Pricing
+        //Pricing 
         const ev_pricing = filters.get("ev_pricing");
         if (ev_pricing && ev_pricing.length > 0) {
           return ev_pricing.some((price) => {
