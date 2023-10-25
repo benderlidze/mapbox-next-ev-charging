@@ -151,7 +151,6 @@ export const MapboxMap = () => {
         } else return true;
       })
       .filter((d: any) => {
-        console.log("filters", filters);
         //Pricing
         const ev_pricing = filters.get("ev_pricing");
         if (ev_pricing && ev_pricing.length > 0) {
@@ -161,7 +160,6 @@ export const MapboxMap = () => {
         } else return true;
       })
       .filter((d: any) => {
-        console.log("filters", filters);
         //status code
         const status_code = filters.get("status_code");
         if (status_code && status_code.length > 0) {
