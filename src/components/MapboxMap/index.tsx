@@ -155,7 +155,11 @@ export const MapboxMap = () => {
         const ev_pricing = filters.get("ev_pricing");
         if (ev_pricing && ev_pricing.length > 0) {
           return ev_pricing.some((price) => {
-            return price.includes(d["EV Pricing"]);
+            const pricing =
+              d["EV Pricing"] && d["EV Pricing"].toLowerCase().trim() === "free"
+                ? "Free"
+                : "Paid";
+            return price.includes(pricing);
           });
         } else return true;
       })
