@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { DBPinPopup } from "@components/PinPopup";
-import { UserCheckIn } from "@components/UserCheckIn";
 import { SvgButton } from "@components/SvgButton";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Vehicle } from "@apptypes/vehicle";
@@ -55,6 +54,7 @@ export const Reviews = ({ pinData, vehicles }: CheckinsListProps) => {
 
             return (
               <UserReview
+                key={checkin.id}
                 userName={userName}
                 userCar={vehicleName}
                 time={hoursAgo}
