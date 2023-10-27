@@ -25,7 +25,9 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
     return (
       <div className="flex flex-col items-center justify-center gap-4 p-4">
         <div className="text-3xl font-bold">Thank you!</div>
-        <div className="text-lg flex justify-center">Your feedback has been submitted.</div>
+        <div className="text-lg flex justify-center">
+          Your feedback has been submitted.
+        </div>
       </div>
     );
   }
@@ -44,11 +46,16 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
         console.log("results", ev_connectors);
         const connectorId = ev_connectors ? ev_connectors[0].id : null;
 
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+
         const dbData = {
           ...data,
           overall_rating: starRating,
           plug_type: connectorId,
           station_id: pin.ID,
+          user_id: user ? user.id : null,
         };
 
         console.log("dbData", dbData);
