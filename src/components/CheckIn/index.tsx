@@ -6,7 +6,7 @@ import { ToggleSwitcher } from "@components/ToggleSwitcher";
 import { useUserStore } from "@store/user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 interface CheckInProps {
   pin: DBPinPopup;
@@ -16,12 +16,20 @@ interface CheckInProps {
 export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
   const supabase = createClientComponentClient();
   const { user } = useUserStore();
-  const { register, handleSubmit } = useForm();
-  const [starRating, setStarRating] = useState(0);
-  const [selectedType, setSelectedType] = useState<ChargerType | undefined>();
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm();
+  const [starRating, setStarRating] = useState<number>(3);
+  const [selectedType, setSelectedType] = useState<ChargerType | undefined>(
+    pin["EV Connector Types"][0]
+  );
   const [success, setSuccess] = useState(false);
 
   console.log("user", user);
+  console.log("starRating", starRating);
 
   if (success) {
     return (
@@ -75,10 +83,10 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
       >
         <div className="flex flex-row justify-between items-center">
           <select
-            {...register("vehicle_id")}
+            {...(register("vehicle_id"), { defaultValue: "NULL" })}
             className="w-full p-2 bg-gray-300 rounded-2xl border-none"
           >
-            <option value="">Vehicle</option>
+            <option value="0">Vehicle</option>
             {vehicles.map((vehicle) => (
               <option key={vehicle.id} value={vehicle.id}>
                 {vehicle.vehicle}
@@ -87,9 +95,10 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
           </select>
         </div>
         <div className="flex flex-row justify-between items-center">
-          <div className="text-sm font-bold">Overall rating</div>
+          <div className="text-sm font-bold">Overall rating*</div>
           <div className="text-sm">
             <StarRating
+              value={starRating}
               onChange={(val) => {
                 console.log("rating changed", val);
                 setStarRating(val);
@@ -106,24 +115,41 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
         </div>
 
         <div className="flex flex-row justify-between items-center">
-          <div className="text-sm font-bold">Max charge rate</div>
+          <div
+            className="text-sm font-bold"
+            {...(errors.max_charge_rate &&
+              errors.max_charge_rate.type === "required" && {
+                style: { color: "red" },
+              })}
+          >
+            Max charge rate*
+          </div>
           <div className="text-sm">
             <input
               type="text"
-              className="w-16  p-2 bg-gray-300 rounded-2xl border-none"
+              className="w-16 p-2 bg-gray-300 rounded-2xl border-none"
               placeholder="KWs"
-              {...register("max_charge_rate")}
+              {...register("max_charge_rate", { required: true })}
             />
           </div>
         </div>
+
         <div className="flex flex-row justify-between items-center">
-          <div className="text-sm font-bold">Number of working plugs</div>
+          <div
+            className="text-sm font-bold"
+            {...(errors.working_chargers &&
+              errors.working_chargers.type === "required" && {
+                style: { color: "red" },
+              })}
+          >
+            Number of working plugs*
+          </div>
           <div className="text-sm">
             <input
               type="text"
               className="w-16  p-2 bg-gray-300 rounded-2xl border-none"
               placeholder="num"
-              {...register("working_chargers")}
+              {...register("working_chargers", { required: true })}
             />
           </div>
         </div>
