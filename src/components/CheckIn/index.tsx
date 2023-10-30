@@ -3,6 +3,7 @@ import { ChargerType, ChargerTypes } from "@components/ChargerTypes";
 import { DBPinPopup } from "@components/PinPopup";
 import { StarRating } from "@components/StarRating";
 import { ToggleSwitcher } from "@components/ToggleSwitcher";
+import { useUserStore } from "@store/user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -14,12 +15,13 @@ interface CheckInProps {
 
 export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
   const supabase = createClientComponentClient();
+  const { user } = useUserStore();
   const { register, handleSubmit } = useForm();
   const [starRating, setStarRating] = useState(0);
   const [selectedType, setSelectedType] = useState<ChargerType | undefined>();
   const [success, setSuccess] = useState(false);
 
-  console.log("pin", pin);
+  console.log("user", user);
 
   if (success) {
     return (
@@ -159,10 +161,19 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
           <div className="text-xs">I wish to remain anonymous</div>
         </div>
         <div className="flex justify-center gap-1">
-          <input
-            type="submit"
-            className="select-none w-1/2 flex justify-center text-white rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 cursor-pointer p-2 width-fit mt-2 mb-2"
-          />
+          {user && user.id !== 0 ? (
+            <input
+              type="submit"
+              className="select-none w-1/2 flex justify-center text-white rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 cursor-pointer p-2 width-fit mt-2 mb-2"
+            />
+          ) : (
+            <button
+              disabled
+              className="select-none w-1/2 flex justify-center text-white rounded-lg bg-gray-500 cursor-pointer p-2 width-fit mt-2 mb-2"
+            >
+              Sign in to submit
+            </button>
+          )}
         </div>
       </div>
     </form>

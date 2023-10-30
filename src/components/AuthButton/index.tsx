@@ -1,4 +1,6 @@
 "use client";
+import { UserInfo } from "@apptypes/user";
+import { useUserStore } from "@store/user";
 import {
   Session,
   createClientComponentClient,
@@ -11,6 +13,7 @@ export const AuthButton = () => {
     console.log("clicked");
     setIsOpen(!isOpen);
   };
+  const { setUserData } = useUserStore();
 
   const [session, setUser] = useState<Session>();
   const supabase = createClientComponentClient();
@@ -40,23 +43,28 @@ export const AuthButton = () => {
   useEffect(() => {
     supabase.auth.onAuthStateChange(async (event, session) => {
       session && setUser(session);
+
+      if (session && session.user) {
+        const userData = session.user;
+        setUserData({ user: { ...userData.user_metadata } as UserInfo });
+      }
     });
   }, [supabase]);
 
-  useEffect(() => {
-    async function getProfile() {
-      console.log("session", session);
-      let { data, error } = await supabase
-        .from("profiles")
-        .select(`username, website, avatar_url`)
-        .eq("id", "fe5285a1-8b35-4861-bea4-91943cb33ee1")
-        .single();
+  // useEffect(() => {
+  //   async function getProfile() {
+  //     console.log("session", session);
+  //     let { data, error } = await supabase
+  //       .from("profiles")
+  //       .select(`username, website, avatar_url`)
+  //       .eq("id", session?.user.id)
+  //       .single();
+  //     console.log("data", data);
 
-      console.log("data", data);
-    }
-
-    getProfile();
-  }, [session]);
+  //     setUserData({ user: { ...data } as UserInfo });
+  //   }
+  //   getProfile();
+  // }, [session]);
 
   return (
     <>

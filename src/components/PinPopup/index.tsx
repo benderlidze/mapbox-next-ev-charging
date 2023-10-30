@@ -232,13 +232,13 @@ export const PinPopup = React.memo(
               <div className="text-sm">4.5 </div>
               <div className="text-sm">(128 reviews)</div>
             </div>
-            <div className="flex flex-row justify-start align-middle space-x-4">
+            {/* <div className="flex flex-row justify-start align-middle space-x-4">
               <div className="select-none w-fit flex justify-center text-white rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 cursor-pointer px-2 ">
                 Available
               </div>
               <div className="text-sm">1.6 km</div>
               <div className="text-sm">5 mins</div>
-            </div>
+            </div> */}
 
             <div className="flex flex-row gap-1">
               <div

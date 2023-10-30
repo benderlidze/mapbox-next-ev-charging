@@ -14,10 +14,9 @@ export const Reviews = ({ pinData, vehicles }: CheckinsListProps) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>([]);
   const supabase = createClientComponentClient();
-
+  console.log("supabse", supabase);
   useEffect(() => {
     const fetchCheckins = async () => {
-      console.log("pinData.ID", pinData.ID);
       const { data, error } = await supabase
         .from("checkins")
         .select("*")
