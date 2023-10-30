@@ -19,9 +19,10 @@ export const Reviews = ({ pinData, vehicles }: CheckinsListProps) => {
     const fetchCheckins = async () => {
       const { data, error } = await supabase
         .from("checkins")
-        .select("*")
+        .select("*, users(id,email)")
         .eq("station_id", pinData.ID);
       setLoading(false);
+      console.log("data", data);
       data && setData(data);
     };
     fetchCheckins();
@@ -49,12 +50,21 @@ export const Reviews = ({ pinData, vehicles }: CheckinsListProps) => {
                   60
               ) + " hours ago";
 
-            const userName = checkin.user_id || "Unknown";
+            const userName = () => {
+              if (checkin.anonymous) return "Anonymous";
+
+              const email = checkin.users?.email.split("@");
+              if (email) {
+                return email[0];
+              }
+
+              return "Unknown";
+            };
 
             return (
               <UserReview
                 key={checkin.id}
-                userName={userName}
+                userName={userName()}
                 userCar={vehicleName}
                 time={hoursAgo}
                 stars={checkin.overall_rating}

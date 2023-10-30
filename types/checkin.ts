@@ -19,4 +19,9 @@ type Checkin = {
   anonymous: boolean;
   plug_type: number;
   station_id: string;
+
+  users?: {
+    email: string;
+    id: string;
+  };
 };
