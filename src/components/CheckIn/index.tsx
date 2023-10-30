@@ -86,7 +86,7 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
             {...(register("vehicle_id"), { defaultValue: "NULL" })}
             className="w-full p-2 bg-gray-300 rounded-2xl border-none"
           >
-            <option value="0">Vehicle</option>
+            <option value="">Vehicle</option>
             {vehicles.map((vehicle) => (
               <option key={vehicle.id} value={vehicle.id}>
                 {vehicle.vehicle}
