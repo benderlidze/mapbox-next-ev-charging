@@ -4,6 +4,9 @@ import { SvgButton } from "@components/SvgButton";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Vehicle } from "@apptypes/vehicle";
 import { UserReview } from "@components/UserReview";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 type CheckinsListProps = {
   pinData: DBPinPopup;
@@ -42,22 +45,15 @@ export const Reviews = ({ pinData, vehicles }: CheckinsListProps) => {
           data.map((checkin: Checkin) => {
             const vehicle = vehicles.find((v) => v.id === checkin.vehicle_id);
             const vehicleName = vehicle ? vehicle.vehicle : "Unknown";
-            const hoursAgo =
-              Math.floor(
-                (Date.now() - new Date(checkin.created_at).getTime()) /
-                  1000 /
-                  60 /
-                  60
-              ) + " hours ago";
+
+            const hoursAgo = dayjs(checkin.created_at).fromNow();
 
             const userName = () => {
               if (checkin.anonymous) return "Anonymous";
-
               const email = checkin.users?.email.split("@");
               if (email) {
                 return email[0];
               }
-
               return "Unknown";
             };
 
