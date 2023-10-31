@@ -6,6 +6,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Vehicle } from "@apptypes/vehicle";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { userName } from "@utils/userName";
 dayjs.extend(relativeTime);
 
 type CheckinsListProps = {
@@ -49,19 +50,10 @@ export const CheckinsList = ({ pinData, vehicles }: CheckinsListProps) => {
             const vehicleName = vehicle ? vehicle.vehicle : "Unknown";
             const hoursAgo = dayjs(checkin.created_at).fromNow();
 
-            const userName = () => {
-              if (checkin.anonymous) return "Anonymous";
-              const email = checkin.users?.email.split("@");
-              if (email) {
-                return email[0];
-              }
-              return "Unknown";
-            };
-
             return (
               <UserCheckIn
                 key={checkin.id}
-                userName={userName()}
+                userName={userName(checkin as any)}
                 userCar={vehicleName}
                 time={hoursAgo}
                 stars={checkin.overall_rating}

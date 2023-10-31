@@ -22,8 +22,8 @@ export const UserReview = ({
       </div>
       <div>{comment}</div>
       <div className="flex flex-row gap-2">
-        <img src="icons/thumbsup.svg" alt="" />
-        <span className="text-green-600 font-bold text-lg">6</span>
+        <img src="icons/thumbsup.svg" alt="" className="cursor-pointer"/>
+        <span className="text-green-600 font-bold text-lg ">6</span>
       </div>
     </div>
   );
