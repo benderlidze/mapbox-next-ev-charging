@@ -46,6 +46,9 @@ export const FiltersButton = () => {
     //   .catch((err) => {
     //     console.log("err", err);
     //   });
+
+    setIsLoading(false);
+    setIsOpen(false);
   };
 
   return (
