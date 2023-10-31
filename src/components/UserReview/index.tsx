@@ -1,9 +1,12 @@
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+
 interface UserReviewProps {
   userName: string;
   userCar: string;
   time: string;
   stars: number;
   comment: string;
+  handleLikeClick: () => void;
 }
 
 export const UserReview = ({
@@ -12,6 +15,7 @@ export const UserReview = ({
   time,
   stars,
   comment,
+  handleLikeClick,
 }: UserReviewProps) => {
   return (
     <div className="flex flex-col">
@@ -22,7 +26,12 @@ export const UserReview = ({
       </div>
       <div>{comment}</div>
       <div className="flex flex-row gap-2">
-        <img src="icons/thumbsup.svg" alt="" className="cursor-pointer"/>
+        <img
+          onClick={handleLikeClick}
+          src="icons/thumbsup.svg"
+          alt=""
+          className="cursor-pointer"
+        />
         <span className="text-green-600 font-bold text-lg ">6</span>
       </div>
     </div>

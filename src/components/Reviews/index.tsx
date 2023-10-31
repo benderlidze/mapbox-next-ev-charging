@@ -9,27 +9,37 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import { userName } from "@utils/userName";
 dayjs.extend(relativeTime);
 
-type CheckinsListProps = {
+type ReviewsListProps = {
   pinData: DBPinPopup;
   vehicles: Vehicle[];
 };
 
-export const Reviews = ({ pinData, vehicles }: CheckinsListProps) => {
+export const Reviews = ({ pinData, vehicles }: ReviewsListProps) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>([]);
   const supabase = createClientComponentClient();
-  console.log("supabse", supabase);
+  console.log("pinData", pinData);
+
   useEffect(() => {
-    const fetchCheckins = async () => {
+    const fetchReviews = async () => {
       const { data, error } = await supabase
         .from("checkins")
         .select("*, users(id,email)")
         .eq("station_id", pinData.ID);
       setLoading(false);
-      console.log("data", data);
+      console.log("fetchReviews data", data);
       data && setData(data);
+
+      if (data) {
+        console.log("pinData.ID", pinData.ID);
+        const { data: checkins, error: chError } = await supabase.rpc(
+          "get_checkins_likes",
+          { stationid: pinData.ID }
+        );
+        console.log("checkins,chError", checkins, chError);
+      }
     };
-    fetchCheckins();
+    fetchReviews();
   }, []);
 
   return (
@@ -56,6 +66,23 @@ export const Reviews = ({ pinData, vehicles }: CheckinsListProps) => {
                 time={hoursAgo}
                 stars={checkin.overall_rating}
                 comment={checkin.comments}
+                handleLikeClick={async () => {
+                  const {
+                    data: { user },
+                  } = await supabase.auth.getUser();
+                  if (!user) return;
+
+                  const data = {
+                    checkins_id: checkin.id,
+                    user_id: user.id,
+                  };
+                  console.log("data", data);
+                  const { error } = await supabase
+                    .from("checkins_likes")
+                    .insert(data);
+                  console.log("error", error);
+                  //refetch likes????
+                }}
               />
             );
           })}
