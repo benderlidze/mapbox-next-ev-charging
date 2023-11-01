@@ -60,7 +60,7 @@ export const Reviews = ({ pinData, vehicles }: ReviewsListProps) => {
 
   return (
     <div>
-      <div className="flex flex-col gap-4 p-2 mt-4 border border-gray-00 rounded-lg bg-slate-100">
+      <div className="max-h-[300px] overflow-y-auto flex flex-col gap-4 p-2 mt-4 border border-gray-00 rounded-lg bg-slate-100">
         <div className="flex flex-row-reverse">
           <SvgButton icon="/icons/filter.svg" onClick={() => {}} />
         </div>
