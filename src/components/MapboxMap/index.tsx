@@ -239,7 +239,7 @@ export const MapboxMap = () => {
     features: geojson,
   } as GeoJSON.FeatureCollection<GeoJSON.Geometry>;
 
-  console.log("featureCollection", featureCollection);
+  // console.log("featureCollection", featureCollection);
   return (
     <div className="flex flex-grow">
       <Map

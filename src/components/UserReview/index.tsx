@@ -6,15 +6,17 @@ interface UserReviewProps {
   time: string;
   stars: number;
   comment: string;
+  likes: number;
+  ableToLike: boolean;
   handleLikeClick: () => void;
 }
 
 export const UserReview = ({
   userName,
-  userCar,
   time,
-  stars,
   comment,
+  likes,
+  ableToLike,
   handleLikeClick,
 }: UserReviewProps) => {
   return (
@@ -25,14 +27,15 @@ export const UserReview = ({
         <div className="text-sm">{time}</div>
       </div>
       <div>{comment}</div>
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-2 select-none ">
         <img
           onClick={handleLikeClick}
           src="icons/thumbsup.svg"
           alt=""
-          className="cursor-pointer"
+          className={ableToLike ? "cursor-pointer" : "pointer-events-none"}
+          style={{ filter: ableToLike ? "grayscale(0)" : "grayscale(100%)" }}
         />
-        <span className="text-green-600 font-bold text-lg ">6</span>
+        <span className="text-green-600 font-bold text-lg ">{likes}</span>
       </div>
     </div>
   );
