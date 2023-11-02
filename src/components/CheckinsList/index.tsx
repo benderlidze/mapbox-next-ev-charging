@@ -19,14 +19,11 @@ export const CheckinsList = ({ pinData, vehicles }: CheckinsListProps) => {
   const [data, setData] = useState<any>([]);
   const supabase = createClientComponentClient();
 
-  // console.log("vehicles", vehicles);
-
   useEffect(() => {
     const fetchCheckins = async () => {
-      console.log("pinData.ID", pinData.ID);
       const { data, error } = await supabase
         .from("checkins")
-        .select("*")
+        .select("*, users(id,email)")
         .eq("station_id", pinData.ID);
       setLoading(false);
       data && setData(data);
@@ -46,6 +43,7 @@ export const CheckinsList = ({ pinData, vehicles }: CheckinsListProps) => {
         {!loading &&
           data.length > 0 &&
           data.map((checkin: Checkin) => {
+
             const vehicle = vehicles.find((v) => v.id === checkin.vehicle_id);
             const vehicleName = vehicle ? vehicle.vehicle : "Unknown";
             const hoursAgo = dayjs(checkin.created_at).fromNow();
