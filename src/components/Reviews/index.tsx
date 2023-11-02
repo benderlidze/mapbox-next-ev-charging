@@ -32,7 +32,9 @@ export const Reviews = ({ pinData, vehicles }: ReviewsListProps) => {
   const fetchReviews = async () => {
     const {
       data: { user },
+      error: userError,
     } = await supabase.auth.getUser();
+
     if (user) {
       setUserData(user);
     }
@@ -43,10 +45,11 @@ export const Reviews = ({ pinData, vehicles }: ReviewsListProps) => {
       .eq("station_id", pinData.ID);
     setLoading(false);
 
-    if (data && user) {
+    if (data) {
+      const userid = user ? user.id : null;
       const { data: checkins, error: chError } = await supabase.rpc(
         "get_checkins_likes",
-        { stationid: pinData.ID, userid: user.id }
+        { stationid: pinData.ID, userid: userid }
       );
       console.log("checkins,chError", checkins, chError);
       console.log("data, error", data, error);
