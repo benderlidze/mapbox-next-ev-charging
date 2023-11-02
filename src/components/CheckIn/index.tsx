@@ -60,15 +60,18 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
           data: { user },
         } = await supabase.auth.getUser();
 
+        console.log("data.vehicle_id============>>>>", data.vehicle_id);
         const dbData = {
           ...data,
           overall_rating: starRating,
           plug_type: connectorId,
           station_id: pin.ID,
+          vehicle_id: data.vehicle_id ? data.vehicle_id : null,
           user_id: user ? user.id : null,
         };
 
         console.log("dbData", dbData);
+
         const { error } = await supabase.from("checkins").insert({ ...dbData });
         console.log("error", error);
 
@@ -83,7 +86,7 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
       >
         <div className="flex flex-row justify-between items-center">
           <select
-            {...(register("vehicle_id"), { defaultValue: "NULL" })}
+            {...register("vehicle_id")}
             className="w-full p-2 bg-gray-300 rounded-2xl border-none"
           >
             <option value="">Vehicle</option>
