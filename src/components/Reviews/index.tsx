@@ -81,14 +81,12 @@ export const Reviews = ({ pinData, vehicles }: ReviewsListProps) => {
             const vehicleName = vehicle ? vehicle.vehicle : "Unknown";
             const hoursAgo = dayjs(checkin.created_at).fromNow();
 
+            console.log("userData.id", userData.id);
+
             const ableToLike =
-              !likesData?.voted && userData.id !== checkin.user_id; //do not vote for own comments and already voted comments
-            console.log(
-              "likesData?.voted && userData.id !== checkin.user_id",
-              likesData?.voted,
-              userData.id,
-              checkin.user_id
-            );
+              !likesData?.voted &&
+              userData.id &&
+              userData.id !== checkin.user_id; //do not vote for own comments and already voted comments
 
             return (
               <UserReview
