@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { Feature, Geometry, GeoJsonProperties } from "geojson";
 import { UserInfo } from "@apptypes/user";
 
 export interface State {

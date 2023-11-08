@@ -6,9 +6,12 @@ import {
   createClientComponentClient,
 } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
+import { SettingsWindow } from "@components/SettingsWindow";
 
 export const AuthButton = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isOpenSettingWindow, setIsOpenSettingWindow] = useState(false);
+
   const handleButtonCLick = () => {
     console.log("clicked");
     setIsOpen(!isOpen);
@@ -51,23 +54,16 @@ export const AuthButton = () => {
     });
   }, [supabase]);
 
-  // useEffect(() => {
-  //   async function getProfile() {
-  //     console.log("session", session);
-  //     let { data, error } = await supabase
-  //       .from("profiles")
-  //       .select(`username, website, avatar_url`)
-  //       .eq("id", session?.user.id)
-  //       .single();
-  //     console.log("data", data);
-
-  //     setUserData({ user: { ...data } as UserInfo });
-  //   }
-  //   getProfile();
-  // }, [session]);
+  const openSettingsWindow = () => {
+    setIsOpenSettingWindow(true);
+  };
 
   return (
     <>
+      {isOpenSettingWindow && (
+        <SettingsWindow setIsOpenSettingWindow={setIsOpenSettingWindow} />
+      )}
+
       <div
         onClick={handleButtonCLick}
         className="p-2 border rounded-md cursor-pointer hover:bg-gray-100 select-none"
@@ -76,7 +72,7 @@ export const AuthButton = () => {
         {!session && <div className="flex">Sign in</div>}
       </div>
       {isOpen && (
-        <div className="absolute z-10 top-20 right-2 w-48 bg-white border rounded-xl shadow-md p-4">
+        <div className="absolute z-10 top-20 right-2  bg-white border rounded-xl shadow-md p-4">
           {!session && (
             <div className="flex flex-col gap-3">
               <div className="flex items-center">
@@ -92,9 +88,19 @@ export const AuthButton = () => {
           )}
 
           {session && (
-            <button style={{ marginRight: 10 }} onClick={() => handleSignOut()}>
-              Sign Out
-            </button>
+            <div className="flex flex-col items-start gap-3">
+              <div className="flex  text-sm">
+                <button onClick={openSettingsWindow}>My Vehicles</button>
+              </div>
+              <div className="flex ">
+                <button
+                  style={{ marginRight: 10 }}
+                  onClick={() => handleSignOut()}
+                >
+                  Sign Out
+                </button>
+              </div>
+            </div>
           )}
         </div>
       )}
