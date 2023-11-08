@@ -7,10 +7,12 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 import { useEffect, useState } from "react";
 import { SettingsWindow } from "@components/SettingsWindow";
+import { useFiltersStore } from "@store/filters";
 
 export const AuthButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenSettingWindow, setIsOpenSettingWindow] = useState(false);
+  const { filters, updateFilter } = useFiltersStore();
 
   const handleButtonCLick = () => {
     console.log("clicked");
@@ -41,6 +43,12 @@ export const AuthButton = () => {
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     window.location.href = "/";
+  };
+
+  const handleFavoriteChargers = () => {
+    console.log("1", 1);
+    console.log("filters", filters);
+    updateFilter("userFavorite", "true");
   };
 
   useEffect(() => {
@@ -89,6 +97,11 @@ export const AuthButton = () => {
 
           {session && (
             <div className="flex flex-col items-start gap-3">
+              <div className="flex  text-sm">
+                <button onClick={handleFavoriteChargers}>
+                  Favorite chargers
+                </button>
+              </div>
               <div className="flex  text-sm">
                 <button onClick={openSettingsWindow}>My Vehicles</button>
               </div>

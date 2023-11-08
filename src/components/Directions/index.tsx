@@ -6,7 +6,6 @@ import { Source, Layer, LayerProps } from "react-map-gl";
 export const Directions = () => {
   const route = useDirectionsStore((state) => state.route);
   const [showDirections, setShowDirections] = React.useState(true);
-  console.log("route", route);
 
   React.useEffect(() => {
     if (route && route.length > 0) {

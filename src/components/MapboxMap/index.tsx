@@ -35,7 +35,6 @@ export const MapboxMap = () => {
       data && setVehicles(data);
     };
     getEVCarModels();
-
     return () => {
       console.log("MapboxMap unmounted");
     };
@@ -86,8 +85,8 @@ export const MapboxMap = () => {
 
   useEffect(() => {
     //update pins on filters change
-    console.log("---====UPDATING FILTERS====----");
-    const fetchStations = async () => {
+    console.log("----=====UPDATING FILTERS=====-----");
+    (async () => {
       const bbox = mapRef.current?.getMap().getBounds().toArray().flat();
       if (bbox) {
         const data = await getStationsInView(
@@ -96,15 +95,24 @@ export const MapboxMap = () => {
           bbox[3],
           bbox[2]
         );
-        console.log("data", data);
-        console.log("filters", filters);
-
         const filteredPins = applyFiltersToResults(data);
-        console.log("filteredPins", filteredPins);
         updatePins(filteredPins as []);
       }
-    };
-    fetchStations();
+    })();
+    // const fetchStations = async () => {
+    //   const bbox = mapRef.current?.getMap().getBounds().toArray().flat();
+    //   if (bbox) {
+    //     const data = await getStationsInView(
+    //       bbox[1],
+    //       bbox[0],
+    //       bbox[3],
+    //       bbox[2]
+    //     );
+    //     const filteredPins = applyFiltersToResults(data);
+    //     updatePins(filteredPins as []);
+    //   }
+    // };
+    // fetchStations();
   }, [filters]);
 
   function applyFiltersToResults(data: DBPinPopup[]) {
@@ -151,7 +159,7 @@ export const MapboxMap = () => {
         } else return true;
       })
       .filter((d: any) => {
-        //Pricing 
+        //Pricing
         const ev_pricing = filters.get("ev_pricing");
         if (ev_pricing && ev_pricing.length > 0) {
           return ev_pricing.some((price) => {
@@ -198,16 +206,40 @@ export const MapboxMap = () => {
     min_lat: number,
     min_long: number,
     max_lat: number,
-    max_long: number,
-    filters?: string[]
+    max_long: number
   ) => {
+    const favorite = filters.get("userFavorite");
+    if (favorite && favorite.length > 0) {
+      //fetch only favorite pins
+      return (async () => {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (!user || user.id === null) return;
+        const { data, error } = await supabase
+          .from("user_favorite_stations")
+          .select(
+            `
+          *,
+          ev_stations_gis(*)
+          `
+          )
+          .eq("user_id", user.id);
+        console.log("data---->>>>>>", data);
+        console.log("error---->>>>>>", error);
+        if (data && data.length > 0) {
+          return data.map((d: any) => d.ev_stations_gis);
+        }
+        return [];
+      })();
+    }
+
     const { data, error } = await supabase.rpc("stations_in_view", {
       min_lat,
       min_long,
       max_lat,
       max_long,
     });
-
     console.log("data--->", data, error);
     return data;
   };
@@ -268,7 +300,6 @@ export const MapboxMap = () => {
               bbox[2]
             );
             console.log("data", data);
-
             const filteredPins = applyFiltersToResults(data);
             updatePins(filteredPins as []);
           }

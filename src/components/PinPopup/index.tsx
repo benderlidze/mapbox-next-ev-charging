@@ -6,23 +6,6 @@ import { Vehicle } from "@apptypes/vehicle";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import React from "react";
 import { ChargerType } from "@components/ChargerTypes";
-// export interface PinProps_deprecated {
-//   id: number;
-//   latitude: number;
-//   longitude: number;
-//   city: string;
-//   zip: string;
-//   ev_connector_types: string[];
-//   station_name: string;
-//   street_address: string;
-//   ev_network: string;
-//   ev_network_web: string;
-//   ev_pricing: string;
-//   access_days_time: string;
-//   ev_dc_fast_num: number;
-//   ev_level1_evse_num: number;
-//   ev_level2_evse_num: number;
-// }
 
 export type DBPinPopup = {
   "EV DC Fast Count": string;
@@ -41,6 +24,7 @@ export type DBPinPopup = {
   ID: number;
   Latitude: number;
   Longitude: number;
+  user_favorite_stations: any[];
 };
 
 interface PinPopupProps {
@@ -59,31 +43,65 @@ export const PinPopup = React.memo(
     console.log("RENDER pinPopup", vehicles);
 
     useEffect(() => {
-      setIsLoading(true);
-      const pinId = pin.ID;
-      const getPinData = async () => {
-        const { data, error } = await supabase
-          .from("ev_stations_gis")
-          .select()
-          .eq("ID", pinId);
-        data &&
-          data[0] &&
-          setPinData({
-            ...data[0],
-            "EV Connector Types":
-              data[0]["EV Connector Types"] !== null
-                ? (data[0]["EV Connector Types"].split(" ") as ChargerType[])
-                : [],
-          });
+      (async () => {
+        setIsLoading(true);
+        await getPinData();
         setIsLoading(false);
-        console.log("data", data, error);
-      };
-      getPinData();
+      })();
     }, [pin.ID]);
+
+    const getPinData = async () => {
+      const pinId = pin.ID;
+      const { data, error } = await supabase
+        .from("ev_stations_gis")
+        .select(
+          `
+          *,
+          user_favorite_stations( station_id)
+          `
+        )
+        .eq("ID", pinId);
+      data &&
+        data[0] &&
+        setPinData({
+          ...data[0],
+          "EV Connector Types":
+            data[0]["EV Connector Types"] !== null
+              ? (data[0]["EV Connector Types"].split(" ") as ChargerType[])
+              : [],
+        });
+      console.log("data", data, error);
+    };
+
+    const handleLikeStationClick = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user || user.id === null) return;
+      if (pinData && pinData["user_favorite_stations"].length === 0) {
+        //add to favorites
+        const dbData = {
+          station_id: pin.ID,
+          user_id: user ? user.id : null,
+        };
+        const { error } = await supabase
+          .from("user_favorite_stations")
+          .insert({ ...dbData });
+      } else {
+        //remove from favorites
+        const { error } = await supabase
+          .from("user_favorite_stations")
+          .delete()
+          .eq("station_id", pin.ID)
+          .eq("user_id", user.id);
+      }
+      getPinData();
+    };
 
     const handleCheckInClick = () => {
       setCheckInVisible(!checkInVisible);
     };
+
     const handleGetDirectionsClick = () => {
       console.log("get directions");
       //get uuser position
@@ -108,49 +126,6 @@ export const PinPopup = React.memo(
         console.log(position);
       });
     };
-
-    const allAvailableNetworks = [
-      "SHELL_RECHARGE",
-      "Non-Networked",
-      "Volta",
-      "EV Connect",
-      "POWERFLEX",
-      "ChargePoint Network",
-      "OpConnect",
-      "EVGATEWAY",
-      null,
-      "eVgo Network",
-      "AMPUP",
-      "EVCS",
-      "Blink Network",
-      "UNIVERSAL",
-      "FCN",
-      "Tesla",
-      "ZEFNET",
-      "Tesla Destination",
-      "Electrify America",
-      "CHARGELAB",
-      "LIVINGSTON",
-      "FLO",
-      "FPLEV",
-      "7CHARGE",
-      "EVMATCH",
-      "RIVIAN_WAYPOINTS",
-      "RED_E",
-      "SWTCH",
-      "CIRCLE_K",
-      "WAVE",
-      "EVRANGE",
-      "GRAVITI_ENERGY",
-      "FLASH",
-      "RIVIAN_ADVENTURE",
-      "CHARGEUP",
-      "JULE",
-      "NOODOE",
-      "CHARGIE",
-      "LOOP",
-      "REVEL",
-    ];
 
     const networkIMage = (network: DBPinPopup["EV Network"]) => {
       const nameToNetwork = {
@@ -185,6 +160,12 @@ export const PinPopup = React.memo(
         </div>
       );
 
+    const likeSrc =
+      pinData["user_favorite_stations"] &&
+      pinData["user_favorite_stations"].length > 0
+        ? "/icons/like-filled.svg"
+        : "/icons/like-outline.svg";
+
     return (
       <div className="w-80 min-h-[41rem] absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10 bg-opacity-100 bg-white shadow-md ">
         <div
@@ -203,9 +184,10 @@ export const PinPopup = React.memo(
               <div className="flex justify-center align-middle ">
                 <img
                   className="cursor-pointer "
-                  src="/icons/like-outline.svg"
+                  src={likeSrc}
                   alt=""
-                  width={30}
+                  style={{ width: 30, height: 30 }}
+                  onClick={handleLikeStationClick}
                 />
               </div>
             </div>
