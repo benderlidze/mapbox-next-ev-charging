@@ -6,6 +6,7 @@ import { Vehicle } from "@apptypes/vehicle";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import React from "react";
 import { ChargerType } from "@components/ChargerTypes";
+import { ChargerRating } from "@components/ChargerRating";
 
 export type DBPinPopup = {
   "EV DC Fast Count": string;
@@ -204,15 +205,7 @@ export const PinPopup = React.memo(
               </div>
             </div>
             <div className="flex flex-row justify-start align-middle space-x-4 my-3 ">
-              <div className="flex flex-row align-middle gap-1">
-                <img src="/icons/star.svg" alt="" width={12} />
-                <img src="/icons/star.svg" alt="" width={12} />
-                <img src="/icons/star.svg" alt="" width={12} />
-                <img src="/icons/star.svg" alt="" width={12} />
-                <img src="/icons/star.svg" alt="" width={12} />
-              </div>
-              <div className="text-sm">4.5 </div>
-              <div className="text-sm">(128 reviews)</div>
+              <ChargerRating pinData={pinData} />
             </div>
             {/* <div className="flex flex-row justify-start align-middle space-x-4">
               <div className="select-none w-fit flex justify-center text-white rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 cursor-pointer px-2 ">
