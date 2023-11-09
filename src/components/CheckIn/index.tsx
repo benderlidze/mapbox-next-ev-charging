@@ -5,7 +5,7 @@ import { StarRating } from "@components/StarRating";
 import { ToggleSwitcher } from "@components/ToggleSwitcher";
 import { useUserStore } from "@store/user";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 interface CheckInProps {
@@ -27,9 +27,26 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
     pin["EV Connector Types"][0]
   );
   const [success, setSuccess] = useState(false);
+  const [userVehicles, setUserVehicles] = useState<any[]>([]);
 
-  console.log("user", user);
-  console.log("starRating", starRating);
+  console.log("user!!!", user);
+
+  useEffect(() => {
+    const fetchUserVehicles = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const { data: vehicles, error } = await supabase
+        .from("user_vehicles")
+        .select("*")
+        .eq("userid", user?.id);
+      if (!error) {
+        const vehiclesArray = vehicles.map((v) => v.vehicle_id);
+        setUserVehicles(vehiclesArray);
+      }
+    };
+    fetchUserVehicles();
+  }, []);
 
   if (success) {
     return (
@@ -90,11 +107,18 @@ export const CheckIn = ({ pin, vehicles }: CheckInProps) => {
             className="w-full p-2 bg-gray-300 rounded-2xl border-none"
           >
             <option value="">Vehicle</option>
-            {vehicles.map((vehicle) => (
-              <option key={vehicle.id} value={vehicle.id}>
-                {vehicle.vehicle}
-              </option>
-            ))}
+            {vehicles
+              .filter((v) => {
+                if (userVehicles && userVehicles.length > 0) {
+                  return userVehicles.includes(v.id);
+                }
+                return true;
+              })
+              .map((vehicle) => (
+                <option key={vehicle.id} value={vehicle.id}>
+                  {vehicle.vehicle}
+                </option>
+              ))}
           </select>
         </div>
         <div className="flex flex-row justify-between items-center">
