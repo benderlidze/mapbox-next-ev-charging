@@ -2,9 +2,6 @@ import { useState } from "react";
 import { DBPinPopup } from "@components/PinPopup";
 import { ChargerTypes } from "@components/ChargerTypes";
 
-import { SvgButton } from "@components/SvgButton";
-import { UserReview } from "@components/UserReview";
-
 import { CheckinsList } from "@components/CheckinsList";
 import { Vehicle } from "@apptypes/vehicle";
 import { Reviews } from "../Reviews";
@@ -71,6 +68,11 @@ export const Tabs = ({
           <div className="flex flex-row justify-between p-3">
             <div className="text-sm">Cost</div>
             <div className="text-sm">{pinData["EV Pricing"]}</div>
+          </div>
+
+          <div className="flex flex-row justify-between p-3">
+            <div className="text-sm">Facility Type</div>
+            <div className="text-sm">{pinData["Facility Type"]}</div>
           </div>
         </div>
 

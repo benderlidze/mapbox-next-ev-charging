@@ -20,6 +20,7 @@ export type DBPinPopup = {
   "EV Network Web": string;
   "Station Name": string;
   "Street Address": string;
+  "Facility Type": string;
   City: string;
   ZIP: string;
   ID: number;
@@ -58,14 +59,18 @@ export const PinPopup = React.memo(
         .select(
           `
           *,
-          user_favorite_stations( station_id)
+          user_favorite_stations(station_id),
+          facilities("Facility")
           `
         )
         .eq("ID", pinId);
+
       data &&
         data[0] &&
         setPinData({
           ...data[0],
+          "Facility Type":
+            data[0].facilities !== null ? data[0].facilities.Facility : "",
           "EV Connector Types":
             data[0]["EV Connector Types"] !== null
               ? (data[0]["EV Connector Types"].split(" ") as ChargerType[])
