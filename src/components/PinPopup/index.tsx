@@ -53,17 +53,41 @@ export const PinPopup = React.memo(
     }, [pin.ID]);
 
     const getPinData = async () => {
+      const { data: user } = await supabase.auth.getSession();
+      const userId =
+        user && user.session?.user.id
+          ? user.session.user.id
+          : "00000000-0000-0000-0000-000000000000";
+
       const pinId = pin.ID;
       const { data, error } = await supabase
         .from("ev_stations_gis")
         .select(
           `
           *,
-          user_favorite_stations(station_id),
-          facilities("Facility")
+          user_favorite_stations!left(station_id, user_id),
+          facilities:facilities(
+            "Facility"
+          )
           `
         )
-        .eq("ID", pinId);
+        .eq("ID", pinId)
+        .eq("user_favorite_stations.user_id", userId);
+
+      //supabase left join with where clause
+      //
+      // const { data, error } = await supabase
+      // .from("ev_stations_gis")
+      // .select(
+      //   `
+      //   *,
+      //   user_favorite_stations!inner(station_id, user_id),
+      //   facilities:facilities(
+      //     "Facility"
+      //   )
+      //   `
+      // )
+      // .eq("ID", pinId)
 
       data &&
         data[0] &&
@@ -81,8 +105,9 @@ export const PinPopup = React.memo(
 
     const handleLikeStationClick = async () => {
       const {
-        data: { user },
-      } = await supabase.auth.getUser();
+        data: { session },
+      } = await supabase.auth.getSession();
+      const user = session && session.user;
       if (!user || user.id === null) return;
       if (pinData && pinData["user_favorite_stations"].length === 0) {
         //add to favorites
